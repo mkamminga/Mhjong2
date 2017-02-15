@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <title>Angular QuickStart</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/">
+    <link rel="stylesheet" href="/styles/main.css">
+
+    <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+
+    <script src="systemjs.config.js"></script>
+    <script>
+      System.import('main.js').catch(function(err){ console.error(err); });
+    </script> 
+  </head>
+
+  <body>
+    <div class="top-bar">
+        <div class="top-bar-left">
+          <ul class="menu">
+            <li class="menu-text">Dashboard</li>
+            <li><a href="#">Games</a></li>
+          </ul>
+        </div>
+
+        <div class="top-bar-right">
+          <ul class="menu left">
+            <li><a href="http://mahjongmayhem.herokuapp.com/auth/avans?callbackUrl=http://localhost:3000/callback/">Login</a></li>
+          </uL>
+        </div>
+    </div>
+    
+    <header class="header large primary">
+        <div class="row column text-center">
+          <h1 class="headline">Mahjongmayhem</h1>
+        </div> 
+    </header>
+      
+    <div class="row medium-8 large-7 columns">
+        <app>Loading AppComponent content here ...</app>
+    </div>
+  </body>
+</html>
