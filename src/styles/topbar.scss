@@ -1,0 +1,14 @@
+.top-bar-left{
+    .menu {
+        li {
+            color: white;
+            a {
+                color: white;
+
+                &:hover {
+                    background: $secondary-color ;
+                }
+            }
+        }
+    }
+}
