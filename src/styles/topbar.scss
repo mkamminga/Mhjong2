@@ -1,4 +1,4 @@
-.top-bar-left{
+.top-bar-left {
     .menu {
         li {
             color: white;
@@ -8,6 +8,17 @@
                 &:hover {
                     background: $secondary-color ;
                 }
+            }
+        }
+    }
+}
+
+.top-bar-right {
+    .menu {
+        li {
+            a {
+                background: white;
+                color: $primary-color;
             }
         }
     }
