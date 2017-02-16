@@ -10,10 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var UserService_1 = require('../services/UserService');
+var GameService_1 = require('../services/GameService');
 var GamesComponent = (function () {
-    function GamesComponent(userService) {
+    function GamesComponent(userService, gameService) {
         this.userService = userService;
+        this.gameService = gameService;
+        this.mode = 'Observable';
     }
+    GamesComponent.prototype.ngOnInit = function () {
+        this.getGames();
+    };
+    GamesComponent.prototype.getGames = function () {
+        var _this = this;
+        this.gameService.getGames()
+            .subscribe(function (games) { return _this.games = games; }, function (error) { return _this.errorMessage = error; });
+    };
     GamesComponent.prototype.isLoggedIn = function () {
         return this.userService.isLoggedIn();
     };
@@ -21,9 +32,8 @@ var GamesComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             templateUrl: '../views/games.overview.html',
-        }),
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [UserService_1.UserService])
+        }), 
+        __metadata('design:paramtypes', [UserService_1.UserService, GameService_1.GameService])
     ], GamesComponent);
     return GamesComponent;
 }());

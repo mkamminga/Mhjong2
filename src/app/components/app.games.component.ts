@@ -1,18 +1,36 @@
-import {Component, Injectable} from '@angular/core';
-import { UserService } from '../services/UserService';
+import { Component, OnInit } from '@angular/core';
+import { Http, Response }         from '@angular/http';
+import { Observable }             from 'rxjs/Observable';
+
+import { UserService }            from '../services/UserService';
+import { GameService }            from '../services/GameService';
+import { Game }                   from '../Models/Game';
+
 
 @Component({
   moduleId: module.id, // for relative to current Component load paths
   templateUrl: '../views/games.overview.html',
 })
 
-@Injectable()
-export class GamesComponent { 
-  constructor(private userService: UserService)
-  {
+export class GamesComponent implements OnInit {
+  mode = 'Observable'; 
+  errorMessage: string;
+  games: Game[];
 
+  constructor(private userService: UserService, private gameService: GameService){}
+
+  ngOnInit() 
+  { 
+    this.getGames(); 
   }
 
+  getGames () {
+    this.gameService.getGames()
+                     .subscribe(
+                       games => this.games = games,
+                       error =>  this.errorMessage = <any>error);
+  }
+  
   isLoggedIn(): boolean
   {
     return this.userService.isLoggedIn();

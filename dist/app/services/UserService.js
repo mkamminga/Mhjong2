@@ -25,6 +25,9 @@ var UserService = (function () {
     UserService.prototype.getUserName = function () {
         return this.storage.getValue("username");
     };
+    UserService.prototype.getToken = function () {
+        return this.storage.getValue("token");
+    };
     UserService.prototype.setLoggedInWithAuthenticationData = function (username, token) {
         this.storage.setValue("loggedIn", true);
         this.storage.setValue("username", username);

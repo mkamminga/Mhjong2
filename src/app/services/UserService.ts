@@ -20,6 +20,11 @@ export class UserService
         return <string>this.storage.getValue("username");
     }
 
+    getToken (): string
+    {
+        return <string>this.storage.getValue("token");
+    }
+
     setLoggedInWithAuthenticationData (username: string, token: string): void
     {
         this.storage.setValue("loggedIn", true);

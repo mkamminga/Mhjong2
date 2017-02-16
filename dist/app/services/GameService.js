@@ -9,12 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var http_1 = require('@angular/http');
+var Observable_1 = require('rxjs/Observable');
+require('rxjs/add/operator/catch');
+require('rxjs/add/operator/map');
+var MainHttpService_1 = require('./MainHttpService');
 var GameService = (function () {
-    function GameService() {
+    function GameService(http) {
+        this.http = http;
     }
+    GameService.prototype.getGames = function () {
+        return this.http.get("http://mahjongmayhem.herokuapp.com/games", [{ name: "state", value: "open" }])
+            .map(this.extractData)
+            .catch(this.handleError);
+    };
+    GameService.prototype.extractData = function (res) {
+        var body = res.json();
+        console.log("GameService > extractData: " + body[0]);
+        return body || {};
+    };
+    GameService.prototype.handleError = function (error) {
+        var errMsg;
+        if (error instanceof http_1.Response) {
+            var body = error.json() || '';
+            var err = body.error || JSON.stringify(body);
+            errMsg = error.status + " - " + (error.statusText || '') + " " + err;
+        }
+        else {
+            errMsg = error.message ? error.message : error.toString();
+        }
+        console.error(errMsg);
+        return Observable_1.Observable.throw(errMsg);
+    };
     GameService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [MainHttpService_1.MainHttpService])
     ], GameService);
     return GameService;
 }());
