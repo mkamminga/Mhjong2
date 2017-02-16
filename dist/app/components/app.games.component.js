@@ -9,14 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var UserService_1 = require('../services/UserService');
 var GamesComponent = (function () {
-    function GamesComponent() {
+    function GamesComponent(userService) {
+        this.userService = userService;
     }
+    GamesComponent.prototype.isLoggedIn = function () {
+        return this.userService.isLoggedIn();
+    };
     GamesComponent = __decorate([
         core_1.Component({
-            template: "<h2>Games</h2>",
-        }), 
-        __metadata('design:paramtypes', [])
+            moduleId: module.id,
+            templateUrl: '../views/games.overview.html',
+        }),
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [UserService_1.UserService])
     ], GamesComponent);
     return GamesComponent;
 }());

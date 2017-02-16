@@ -14,6 +14,10 @@ var router_1 = require('@angular/router');
 var app_dashboard_component_1 = require('./components/app.dashboard.component');
 var app_login_component_1 = require('./components/app.login.component');
 var app_games_component_1 = require('./components/app.games.component');
+//providers
+var StorageDriverInterface_1 = require('./services/Storage/StorageDriverInterface');
+var LocalStorageService_1 = require('./services/Storage/LocalStorageService');
+var UserService_1 = require('./services/UserService');
 var appRoutes = [
     {
         path: '',
@@ -32,6 +36,7 @@ var AppModule = (function () {
         core_1.NgModule({
             imports: [platform_browser_1.BrowserModule, router_1.RouterModule.forRoot(appRoutes)],
             declarations: [app_dashboard_component_1.DashBoardComponent, app_login_component_1.LoginComponent, app_games_component_1.GamesComponent],
+            providers: [{ provide: StorageDriverInterface_1.APP_STORAGE, useClass: LocalStorageService_1.LocalStorageService }, UserService_1.UserService],
             bootstrap: [app_dashboard_component_1.DashBoardComponent]
         }), 
         __metadata('design:paramtypes', [])

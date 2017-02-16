@@ -1,6 +1,20 @@
-import { Component } from '@angular/core';
+import {Component, Injectable} from '@angular/core';
+import { UserService } from '../services/UserService';
 
 @Component({
-  template: `<h2>Games</h2>`,
+  moduleId: module.id, // for relative to current Component load paths
+  templateUrl: '../views/games.overview.html',
 })
-export class GamesComponent  { }
+
+@Injectable()
+export class GamesComponent { 
+  constructor(private userService: UserService)
+  {
+
+  }
+
+  isLoggedIn(): boolean
+  {
+    return this.userService.isLoggedIn();
+  }
+}

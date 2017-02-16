@@ -1,25 +1,23 @@
-import { Injectable } from '@angular/core';
 import { StorageDriverInterface } from './StorageDriverInterface';
 
-@Injectable()
 export class LocalStorageService implements StorageDriverInterface
 {
-  getValue (key: string)
+  getValue (key: string): any
   {
       return localStorage.getItem(key);
   }
 
-  setValue (key: string, value: any)
+  setValue (key: string, value: any): void
   {
       localStorage.setItem(key, value);
   }
 
-  remove (key: string)
+  remove (key: string): void
   {
     localStorage.removeItem(key);
   }
 
-  clear ()
+  clear (): void
   {
       localStorage.clear();
   }
