@@ -9,33 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var UserService_1 = require('../services/UserService');
 var GameService_1 = require('../services/GameService');
-var GamesComponent = (function () {
-    function GamesComponent(userService, gameService) {
-        this.userService = userService;
+var GamesNewComponent = (function () {
+    function GamesNewComponent(gameService) {
         this.gameService = gameService;
         this.mode = 'Observable';
     }
-    GamesComponent.prototype.ngOnInit = function () {
-        this.getGames();
+    GamesNewComponent.prototype.ngOnInit = function () {
+        this.getGameTemplates();
     };
-    GamesComponent.prototype.getGames = function () {
+    GamesNewComponent.prototype.getGameTemplates = function () {
         var _this = this;
-        this.gameService.getGames()
-            .subscribe(function (games) { return _this.games = games; }, function (error) { return _this.errorMessage = error; }, function () { return console.log("GamesComponent > getGames > subscribe complete callback: Games loaded"); });
+        return this.gameService.getGameTemplates()
+            .subscribe(function (gameTemplates) { return _this.gameTemplates = gameTemplates; }, function (error) { return _this.errorMessage = error; }, function () { return console.log("GamesNewComponent > getGameTemplates > subscribe complete callback: Games templates loaded"); });
     };
-    GamesComponent.prototype.isLoggedIn = function () {
-        return this.userService.isLoggedIn();
+    GamesNewComponent.prototype.addGame = function () {
+        //todo
     };
-    GamesComponent = __decorate([
+    GamesNewComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            templateUrl: '../views/games.overview.html',
+            templateUrl: '../views/games.new.html',
         }), 
-        __metadata('design:paramtypes', [UserService_1.UserService, GameService_1.GameService])
-    ], GamesComponent);
-    return GamesComponent;
+        __metadata('design:paramtypes', [GameService_1.GameService])
+    ], GamesNewComponent);
+    return GamesNewComponent;
 }());
-exports.GamesComponent = GamesComponent;
-//# sourceMappingURL=app.games.component.js.map
+exports.GamesNewComponent = GamesNewComponent;
+//# sourceMappingURL=app.games.new.component.js.map

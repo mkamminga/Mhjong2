@@ -38,4 +38,4 @@ var GamesComponent = (function () {
     return GamesComponent;
 }());
 exports.GamesComponent = GamesComponent;
-//# sourceMappingURL=app.games.component.js.map
+//# sourceMappingURL=app.games.component.1.js.map

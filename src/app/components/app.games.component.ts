@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Response }         from '@angular/http';
 import { Observable }             from 'rxjs/Observable';
 
 import { UserService }            from '../services/UserService';
@@ -21,14 +20,15 @@ export class GamesComponent implements OnInit {
 
   ngOnInit() 
   { 
-    this.getGames(); 
+    this.getGames();
   }
 
   getGames () {
     this.gameService.getGames()
                      .subscribe(
                        games => this.games = games,
-                       error =>  this.errorMessage = <any>error);
+                       error =>  this.errorMessage = <any>error, 
+                       () => console.log("GamesComponent > getGames > subscribe complete callback: Games loaded"));
   }
   
   isLoggedIn(): boolean

@@ -9,37 +9,58 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
-var Observable_1 = require('rxjs/Observable');
 require('rxjs/add/operator/catch');
 require('rxjs/add/operator/map');
 var MainHttpService_1 = require('./MainHttpService');
+var Game_1 = require('../Models/Game');
+var GameTemplate_1 = require('../Models/GameTemplate');
+var Player_1 = require('../Models/Player');
+var Tile_1 = require('../Models/Tile');
 var GameService = (function () {
-    function GameService(http) {
-        this.http = http;
+    function GameService(mainService) {
+        this.mainService = mainService;
     }
     GameService.prototype.getGames = function () {
-        return this.http.get("http://mahjongmayhem.herokuapp.com/games", [{ name: "state", value: "open" }])
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.mainService.get("/games", [
+            {
+                name: "state",
+                value: "open"
+            }])
+            .map(this.extractGamesData)
+            .catch(this.mainService.handleError);
     };
-    GameService.prototype.extractData = function (res) {
-        var body = res.json();
-        console.log("GameService > extractData: " + body[0]);
-        return body || {};
+    GameService.prototype.getGameTemplates = function () {
+        return this.mainService.get("/games", [
+            {
+                name: "state",
+                value: "open"
+            }])
+            .map(this.extractGameTemplatesData)
+            .catch(this.mainService.handleError);
     };
-    GameService.prototype.handleError = function (error) {
-        var errMsg;
-        if (error instanceof http_1.Response) {
-            var body = error.json() || '';
-            var err = body.error || JSON.stringify(body);
-            errMsg = error.status + " - " + (error.statusText || '') + " " + err;
-        }
-        else {
-            errMsg = error.message ? error.message : error.toString();
-        }
-        console.error(errMsg);
-        return Observable_1.Observable.throw(errMsg);
+    GameService.prototype.extractGamesData = function (res) {
+        return MainHttpService_1.MainHttpService.extractFromJsonData(res, function (data) {
+            var owner = new Player_1.Player(data.createdBy.id, data.createdBy.name);
+            var players = [];
+            for (var _i = 0, _a = data.players; _i < _a.length; _i++) {
+                var player = _a[_i];
+                players.push(new Player_1.Player(player.id, player.name));
+            }
+            var gameTemplate = new GameTemplate_1.GameTemplate(data.gameTemplate.id, []);
+            var game = new Game_1.Game(data.id, owner, data.createdOn, data.startedOn, data.endedOn, gameTemplate, players, data.maxPlayers, data.minPlayers, data.state);
+            return game;
+        });
+    };
+    GameService.prototype.extractGameTemplatesData = function (res) {
+        return MainHttpService_1.MainHttpService.extractFromJsonData(res, function (data) {
+            var tiles = [];
+            for (var _i = 0, _a = data.tiles; _i < _a.length; _i++) {
+                var tile = _a[_i];
+                tiles.push(new Tile_1.Tile(tile.xPos, tile.yPos, tile.zPos));
+            }
+            var gameTemplate = new GameTemplate_1.GameTemplate(data.id, tiles);
+            return gameTemplate;
+        });
     };
     GameService = __decorate([
         core_1.Injectable(), 
