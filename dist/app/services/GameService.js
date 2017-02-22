@@ -21,46 +21,61 @@ var GameService = (function () {
         this.mainService = mainService;
     }
     GameService.prototype.getGames = function () {
+        var _this = this;
         return this.mainService.get("/games", [
             {
                 name: "state",
                 value: "open"
             }])
-            .map(this.extractGamesData)
-            .catch(this.mainService.handleError);
+            .map(function (res) {
+            return _this.mainService.extractFromJsonData(res, function (data) {
+                return _this.createGameFromData(data);
+            });
+        })
+            .catch(function (error) {
+            return _this.mainService.handleError(error);
+        });
+    };
+    GameService.prototype.addGame = function (model) {
+        var _this = this;
+        return this.mainService.post("/games", JSON.stringify(model))
+            .map(function (res) { return res.json(); })
+            .catch(function (error) {
+            return _this.mainService.handleError(error);
+        });
     };
     GameService.prototype.getGameTemplates = function () {
-        return this.mainService.get("/games", [
+        var _this = this;
+        return this.mainService.get("/GameTemplates", [
             {
                 name: "state",
                 value: "open"
             }])
-            .map(this.extractGameTemplatesData)
+            .map(function (res) {
+            return _this.mainService.extractFromJsonData(res, function (data) {
+                var tiles = [];
+                for (var _i = 0, _a = data.tiles; _i < _a.length; _i++) {
+                    var tile = _a[_i];
+                    tiles.push(new Tile_1.Tile(tile.xPos, tile.yPos, tile.zPos));
+                }
+                var gameTemplate = new GameTemplate_1.GameTemplate(data.id, tiles);
+                return gameTemplate;
+            });
+        })
             .catch(this.mainService.handleError);
     };
-    GameService.prototype.extractGamesData = function (res) {
-        return MainHttpService_1.MainHttpService.extractFromJsonData(res, function (data) {
-            var owner = new Player_1.Player(data.createdBy.id, data.createdBy.name);
-            var players = [];
-            for (var _i = 0, _a = data.players; _i < _a.length; _i++) {
-                var player = _a[_i];
-                players.push(new Player_1.Player(player.id, player.name));
-            }
-            var gameTemplate = new GameTemplate_1.GameTemplate(data.gameTemplate.id, []);
-            var game = new Game_1.Game(data.id, owner, data.createdOn, data.startedOn, data.endedOn, gameTemplate, players, data.maxPlayers, data.minPlayers, data.state);
-            return game;
-        });
+    GameService.prototype.createGameFromData = function (data) {
+        var owner = new Player_1.Player(data.createdBy.id, data.createdBy.name);
+        var players = [];
+        for (var _i = 0, _a = data.players; _i < _a.length; _i++) {
+            var player = _a[_i];
+            players.push(new Player_1.Player(player.id, player.name));
+        }
+        var gameTemplate = new GameTemplate_1.GameTemplate(data.gameTemplate.id, []);
+        var game = new Game_1.Game(data.id, owner, data.createdOn, data.startedOn, data.endedOn, gameTemplate, players, data.maxPlayers, data.minPlayers, data.state);
+        return game;
     };
     GameService.prototype.extractGameTemplatesData = function (res) {
-        return MainHttpService_1.MainHttpService.extractFromJsonData(res, function (data) {
-            var tiles = [];
-            for (var _i = 0, _a = data.tiles; _i < _a.length; _i++) {
-                var tile = _a[_i];
-                tiles.push(new Tile_1.Tile(tile.xPos, tile.yPos, tile.zPos));
-            }
-            var gameTemplate = new GameTemplate_1.GameTemplate(data.id, tiles);
-            return gameTemplate;
-        });
     };
     GameService = __decorate([
         core_1.Injectable(), 

@@ -9,7 +9,7 @@ Please login to view any games!
         <a class="button large secondary" routerLink="new-game">Create new game</a>
     </div>
     <div class="callout rounded"  *ngFor="let game of games">
-        <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/mm/yyyy HH:mm:ss' }}</small></h5> 
+        <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
 
         <hr />
         <h6>Players</h6>

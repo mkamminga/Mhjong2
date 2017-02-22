@@ -17,6 +17,7 @@ var platform_browser_1 = require('@angular/platform-browser');
 var http_1 = require('@angular/http');
 var router_1 = require('@angular/router');
 var core_2 = require('@angular/core');
+var forms_1 = require('@angular/forms');
 //components
 var app_dashboard_component_1 = require('./components/app.dashboard.component');
 var app_login_component_1 = require('./components/app.login.component');
@@ -71,7 +72,7 @@ var AppModule = (function () {
     }
     AppModule = __decorate([
         core_1.NgModule({
-            imports: [platform_browser_1.BrowserModule, router_1.RouterModule.forRoot(exports.appRoutes), http_1.HttpModule],
+            imports: [platform_browser_1.BrowserModule, router_1.RouterModule.forRoot(exports.appRoutes), http_1.HttpModule, forms_1.ReactiveFormsModule],
             declarations: [app_dashboard_component_1.DashBoardComponent, app_login_component_1.LoginComponent, app_games_component_1.GamesComponent, app_games_new_component_1.GamesNewComponent],
             providers: [
                 {

@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, Http } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { Injectable, Inject } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 //components
 import { DashBoardComponent }  from './components/app.dashboard.component';
@@ -49,7 +50,7 @@ class MainHttpServiceFactory {
 }
 
 @NgModule({
-  imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule ],
+  imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule, ReactiveFormsModule ],
   declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent],
   providers:[ 
     { 

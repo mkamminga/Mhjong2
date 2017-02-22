@@ -3840,3 +3840,8 @@ a.thumbnail {
 .top-bar-right .menu li a {
   background: white;
   color: #074E68; }
+
+.form-error {
+  display: inherit; }
+  .form-error[hidden] {
+    display: none; }

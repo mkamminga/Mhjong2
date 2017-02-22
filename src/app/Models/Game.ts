@@ -1,7 +1,8 @@
 import {Player} from './Player';
 import {GameTemplate} from './GameTemplate';
+import {BasicGame} from './BasicGame';
 
-export class Game {
+export class Game extends BasicGame {
     constructor(public id:string,
     public createdBy: Player,
     public createdOn: string,
@@ -9,7 +10,9 @@ export class Game {
     public endedOn: string,
     public gameTemplate:GameTemplate,
     public players:Player[],
-    public maxPlayers: number,
-    public minPlayers: number,
-    public state:string) {}
+    maxPlayers: number,
+    minPlayers: number,
+    public state:string) {
+        super(maxPlayers, minPlayers, gameTemplate.id);
+    }
 }

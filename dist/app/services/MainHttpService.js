@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var Observable_1 = require('rxjs/Observable');
+require('rxjs/add/observable/throw');
+require('rxjs/add/operator/catch');
+require('rxjs/add/operator/map');
 var UserService_1 = require('../services/UserService');
 var MainHttpService = (function () {
     function MainHttpService(http, userService, baseUrl) {
@@ -20,22 +23,23 @@ var MainHttpService = (function () {
     }
     MainHttpService.prototype.get = function (url, params) {
         var request = {};
-        request.search = "1=1";
         if (params) {
-            var first = false;
             for (var _i = 0, params_1 = params; _i < params_1.length; _i++) {
                 var item = params_1[_i];
-                request.search += "&" + item.name + "=" + item.value;
-                if (first) {
-                    first = false;
-                }
+                request.search += (request.search != "" ? "&" : "") + item.name + "=" + item.value;
             }
         }
         request.headers = new http_1.Headers({ 'Content-Type': 'application/json', 'x-username': this.userService.getUserName(), 'x-token': this.userService.getToken() });
         return this.http.get(this.baseUrl + url, request);
     };
-    MainHttpService.extractFromJsonData = function (res, factory) {
+    MainHttpService.prototype.post = function (url, params) {
+        var request = {};
+        request.headers = new http_1.Headers({ 'Content-Type': 'application/json', 'x-username': this.userService.getUserName(), 'x-token': this.userService.getToken() });
+        return this.http.post(this.baseUrl + url, params, request);
+    };
+    MainHttpService.prototype.extractFromJsonData = function (res, factory) {
         var body = res.json();
+        console.log(body);
         var objects = [];
         for (var i = 0; i < body.length; i++) {
             objects.push(factory(body[i]));
@@ -43,17 +47,8 @@ var MainHttpService = (function () {
         return objects;
     };
     MainHttpService.prototype.handleError = function (error) {
-        var errMsg;
-        if (error instanceof http_1.Response) {
-            var body = error.json() || '';
-            var err = body.error || JSON.stringify(body);
-            errMsg = error.status + " - " + (error.statusText || '') + " " + err;
-        }
-        else {
-            errMsg = error.message ? error.message : error.toString();
-        }
-        console.error(errMsg);
-        return Observable_1.Observable.throw(errMsg);
+        console.log(error);
+        return Observable_1.Observable.throw(error.json() || 'Server error');
     };
     MainHttpService = __decorate([
         core_1.Injectable(), 
