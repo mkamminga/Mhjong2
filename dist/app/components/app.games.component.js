@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var UserService_1 = require('../services/UserService');
 var GameService_1 = require('../services/GameService');
+var Player_1 = require('../Models/Player');
 var GamesComponent = (function () {
     function GamesComponent(userService, gameService) {
         this.userService = userService;
         this.gameService = gameService;
         this.mode = 'Observable';
+        this.currentPlayer = new Player_1.Player(userService.getUserName(), null, null);
     }
     GamesComponent.prototype.ngOnInit = function () {
         this.getGames();
@@ -24,6 +26,15 @@ var GamesComponent = (function () {
         var _this = this;
         this.gameService.getGames()
             .subscribe(function (games) { return _this.games = games; }, function (error) { return _this.errorMessage = error; }, function () { return console.log("GamesComponent > getGames > subscribe complete callback: Games loaded"); });
+    };
+    GamesComponent.prototype.joinGame = function (game) {
+        var _this = this;
+        this.gameService.joinGame(game)
+            .subscribe(function (updatedGame) { return _this.updateGame(updatedGame, game); }, function (error) { return console.log(error); }, function () { return console.log("GamesComponent > joinGame > subscribe complete callback: joined game"); });
+    };
+    GamesComponent.prototype.updateGame = function (newGame, sourceGame) {
+        sourceGame.players = newGame.players;
+        sourceGame.createdBy = newGame.createdBy;
     };
     GamesComponent.prototype.isLoggedIn = function () {
         return this.userService.isLoggedIn();

@@ -39,7 +39,6 @@ var MainHttpService = (function () {
     };
     MainHttpService.prototype.extractFromJsonData = function (res, factory) {
         var body = res.json();
-        console.log(body);
         var objects = [];
         for (var i = 0; i < body.length; i++) {
             objects.push(factory(body[i]));

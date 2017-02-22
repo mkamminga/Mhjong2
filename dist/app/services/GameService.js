@@ -44,6 +44,14 @@ var GameService = (function () {
             return _this.mainService.handleError(error);
         });
     };
+    GameService.prototype.joinGame = function (game) {
+        var _this = this;
+        return this.mainService.post("/games/" + game.id + "/players", {})
+            .map(function (res) { return _this.createGameFromData(res.json()); })
+            .catch(function (error) {
+            return _this.mainService.handleError(error);
+        });
+    };
     GameService.prototype.getGameTemplates = function () {
         var _this = this;
         return this.mainService.get("/GameTemplates", [
@@ -65,17 +73,17 @@ var GameService = (function () {
             .catch(this.mainService.handleError);
     };
     GameService.prototype.createGameFromData = function (data) {
-        var owner = new Player_1.Player(data.createdBy.id, data.createdBy.name);
+        console.log("createGameFromData ");
+        var owner = new Player_1.Player(data.createdBy._id, data.createdBy.id, data.createdBy.name);
         var players = [];
         for (var _i = 0, _a = data.players; _i < _a.length; _i++) {
             var player = _a[_i];
-            players.push(new Player_1.Player(player.id, player.name));
+            players.push(new Player_1.Player(player._id, player.id, player.name));
         }
         var gameTemplate = new GameTemplate_1.GameTemplate(data.gameTemplate.id, []);
         var game = new Game_1.Game(data.id, owner, data.createdOn, data.startedOn, data.endedOn, gameTemplate, players, data.maxPlayers, data.minPlayers, data.state);
+        console.log(game);
         return game;
-    };
-    GameService.prototype.extractGameTemplatesData = function (res) {
     };
     GameService = __decorate([
         core_1.Injectable(), 

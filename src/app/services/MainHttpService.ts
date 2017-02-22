@@ -37,7 +37,6 @@ export class MainHttpService
     extractFromJsonData(res: Response, factory: (object: {}) => any)
     {
         let body:[{}] = res.json();
-        console.log(body);
         let objects:any[] = [];
         
         for (var i = 0; i < body.length; i++)

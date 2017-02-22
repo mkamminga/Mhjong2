@@ -43,6 +43,15 @@ export class GameService
                 });
     }
 
+    joinGame (game: Game): Observable<Game>
+    {
+        return this.mainService.post("/games/" + game.id + "/players", {})
+                .map((res: Response) => { return this.createGameFromData(res.json()); })
+                .catch((error) => {
+                    return this.mainService.handleError(error);
+                });
+    }
+
     getGameTemplates (): Observable<GameTemplate[]> 
     {
                 return this.mainService.get("/GameTemplates", [
@@ -66,14 +75,15 @@ export class GameService
                         .catch(this.mainService.handleError);
     }
 
-    private createGameFromData (data: Game): Game
+    createGameFromData (data: Game): Game
     {
-        var owner = new Player(data.createdBy.id, data.createdBy.name);
+        console.log("createGameFromData ");
+        var owner = new Player(data.createdBy._id, data.createdBy.id, data.createdBy.name);
         var players:Player[] = [];
 
         for (let player of data.players)
         {
-            players.push(new Player(player.id, player.name));
+            players.push(new Player(player._id, player.id, player.name));
         }
 
         var gameTemplate = new GameTemplate(data.gameTemplate.id, []);
@@ -90,10 +100,7 @@ export class GameService
             data.state
         );
 
+        console.log(game);
         return game;
-    }
-
-    private extractGameTemplatesData(res: Response): GameTemplate[] {
-
     }
 }

@@ -12,13 +12,16 @@ Please login to view any games!
         <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
 
         <hr />
-        <h6>Players</h6>
+        <span>Aviable places: <strong>{{ game.avaiablePlaces() }}</strong></span>
+
+        <h6>Joined players</h6>
         <ul *ngIf="game.players.length > 0 ">
             <li *ngFor="let player of game.players"> {{ player.name }}</li>
         </ul>
+
         <div>
-            <a class="small button" href="#0">View game</a> 
-            <a class="small button success" href="#0">Play game</a> 
+            <button type="button" class="small button success" *ngIf="game.canStart(currentPlayer)">Start</button>
+            <button type="button" class="small button warning" *ngIf="game.canJoin(currentPlayer)" (click)="joinGame(game)">Join game</button> 
         </div>
     </div>
 

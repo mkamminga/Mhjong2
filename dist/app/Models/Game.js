@@ -18,6 +18,29 @@ var Game = (function (_super) {
         this.players = players;
         this.state = state;
     }
+    Game.prototype.avaiablePlaces = function () {
+        var num = (this.maxPlayers - (this.players ? this.players.length : 0));
+        return num > 0 ? num : 0;
+    };
+    Game.prototype.canStart = function (player) {
+        return this.players
+            && this.players.length >= this.minPlayers
+            && this.createdBy.id == player.id;
+    };
+    Game.prototype.canJoin = function (player) {
+        return this.avaiablePlaces() > 0
+            && this.createdBy.id != player.id
+            && !this.isPlayerJoined(player);
+    };
+    Game.prototype.isPlayerJoined = function (playerToMatch) {
+        for (var _i = 0, _a = this.players; _i < _a.length; _i++) {
+            var player = _a[_i];
+            if (playerToMatch.id == player.id) {
+                return true;
+            }
+        }
+        return false;
+    };
     return Game;
 }(BasicGame_1.BasicGame));
 exports.Game = Game;
