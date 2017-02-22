@@ -11,7 +11,7 @@
     "prestart": "npm run build",
     "sass:build": "node-sass src/styles/main.scss -o dist/styles/",
     "sass:watch": "npm run sass:build & node-sass src/styles/main.scss -wo dist/styles/",
-    "cpy:watch" : "cpx \"src/**/*.{html,png,jpg}\" dist --watch",
+    "cpy:watch" : "cpx \"src/**/*.{html,png,jpg,js}\" dist --watch",
     "start": "concurrently \"npm run build:watch\" \"npm run cpy:watch\" \"npm run sass:watch\" \"npm run serve\"",
     "pree2e": "npm run build:e2e",
     "e2e": "concurrently \"npm run serve:e2e\" \"npm run protractor\" --kill-others --success first",
