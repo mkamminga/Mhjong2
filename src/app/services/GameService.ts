@@ -54,6 +54,15 @@ export class GameService
                 });
     }
 
+    getGame (id: string) : Observable<Game>  
+    {
+        return this.mainService.get("/games/" + id + "/")
+                .map((res: Response) => { return this.createGameFromData(res.json()); })
+                .catch((error) => {
+                    return this.mainService.handleError(error);
+                });
+    }
+
     addGame (model: BasicGame): Observable<Game>
     {
         return this.mainService.post("/games", JSON.stringify(model))
@@ -79,29 +88,6 @@ export class GameService
                 .catch((error) => {
                     return this.mainService.handleError(error);
                 });
-    }
-
-    getGameTemplates (): Observable<GameTemplate[]> 
-    {
-                return this.mainService.get("/GameTemplates", [
-                            { 
-                                name : "state", 
-                                value: "open"
-                            }]
-                        )
-                        .map((res: Response) => {         
-                            return this.mainService.extractFromJsonData(res, (data: GameTemplate) => { // the factory that will create the game object, pass a data object that complies with the game object
-                                var tiles:Tile[] = []; 
-                                for (let tile of data.tiles)
-                                {
-                                    tiles.push(new Tile(tile.xPos, tile.yPos, tile.zPos));
-                                }
-                                var gameTemplate = new GameTemplate(data.id, tiles);
-
-                                return gameTemplate;
-                            }); 
-                        })
-                        .catch(this.mainService.handleError);
     }
 
     createGameFromData (data: Game): Game

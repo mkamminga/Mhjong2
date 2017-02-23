@@ -47,7 +47,7 @@ Please login to view any games!
                     <li *ngFor="let player of game.players"> {{ player.name }}</li>
                 </ul>
 
-                <button type="button" class="small button success" (click)="viewGame()">Start</button>
+                <button type="button" class="small button success" (click)="playGame(game)">Play</button>
             </div>
             
         </section>

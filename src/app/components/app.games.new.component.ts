@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router }                             from '@angular/router';
 
 import { GameService }                        from '../services/GameService';
+import { GameTemplateService }                        from '../services/GameTemplateService';
 import { BasicGame }                          from '../Models/BasicGame';
 import { GameTemplate }                       from '../Models/GameTemplate';
 
@@ -40,7 +41,7 @@ export class GamesNewComponent implements OnInit {
     }
   };
 
-  constructor(private gameService: GameService, private fb: FormBuilder, private router: Router){}
+  constructor(private gameService: GameService, private gameTemplateService: GameTemplateService, private fb: FormBuilder, private router: Router){}
 
   ngOnInit ()
   {
@@ -48,9 +49,9 @@ export class GamesNewComponent implements OnInit {
     this.buildForm();
   }
 
-  getGameTemplates ()
+  getGameTemplates (): void
   {
-    return this.gameService.getGameTemplates()
+    this.gameTemplateService.getGameTemplates()
                      .subscribe(
                        gameTemplates => this.gameTemplates = gameTemplates,
                        error =>  this.errorMessage = <any>error, 
@@ -101,7 +102,7 @@ export class GamesNewComponent implements OnInit {
     this.onValueChanged(); // (re)set validation messages now
   }
 
-  onValueChanged(data?: any) {
+  onValueChanged(data?: any): void {
     if (!this.newGameForm) { return; }
     const form = this.newGameForm;
     

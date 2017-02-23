@@ -11,6 +11,7 @@ import { DashBoardComponent }  from './components/app.dashboard.component';
 import { LoginComponent }  from './components/app.login.component';
 import { GamesComponent }  from './components/app.games.component';
 import {GamesNewComponent } from './components/app.games.new.component';
+import {GamesPlayComponent } from './components/app.games.play.component';
 
 //custom providers
 import { StorageDriverInterface, APP_STORAGE } from './services/Storage/StorageDriverInterface';
@@ -18,6 +19,8 @@ import { LocalStorageService } from './services/Storage/LocalStorageService';
 import { MainHttpService }  from './services/MainHttpService';
 import { UserService }  from './services/UserService';
 import { GameService }  from './services/GameService';
+import { GameTemplateService }  from './services/GameTemplateService';
+import { TileService }  from './services/TileService';
 
 //misc
 import { Config, APP_CONFIG }  from './Config';
@@ -36,6 +39,10 @@ export const appRoutes: Routes = [
     component: GamesNewComponent 
   },
   {
+    path: 'games/:id/play',
+    component: GamesPlayComponent
+  },
+  {
     path: 'login',
     component: LoginComponent,
   },
@@ -51,7 +58,7 @@ class MainHttpServiceFactory {
 
 @NgModule({
   imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule, ReactiveFormsModule ],
-  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent],
+  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent],
   providers:[ 
     { 
       provide: APP_STORAGE, 
@@ -63,6 +70,8 @@ class MainHttpServiceFactory {
     },
     UserService, 
     GameService, 
+    GameTemplateService,
+    TileService,
     { 
       provide: MainHttpService, 
       useFactory:MainHttpServiceFactory.create, 

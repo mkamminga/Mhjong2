@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable }             from 'rxjs/Observable';
+import { Router } from '@angular/router';
 
 import { UserService }            from '../services/UserService';
 import { GameService }            from '../services/GameService';
@@ -23,7 +24,7 @@ export class GamesComponent implements OnInit {
     "playingGames" : () => { this.getPlayingGames(); }
   };
 
-  constructor(private userService: UserService, private gameService: GameService)
+  constructor(private userService: UserService, private gameService: GameService, private router: Router)
   {
     this.currentPlayer = new Player(userService.getUserName(), null, null);
   }
@@ -58,19 +59,21 @@ export class GamesComponent implements OnInit {
                      .subscribe(
                        updatedGame => this.updateGame(updatedGame, game),
                        error =>  console.log(error), 
-                       () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game"));
+                       () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game")
+                    );
 
   }
 
-  startGame (game: Game)
+  startGame (game: Game): void
   {
     if (game.canStart(this.currentPlayer))
     {
         this.gameService.startGame(game)
                   .subscribe(
-                    startedGame => console.log("GamesComponent > startGame > subscribe complete callback:game started"),
+                    startedGame => this.playGame(game),
                     error =>  console.log(error), 
-                    () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game"));
+                    () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game")
+                  );
     }
     else
     {
@@ -78,15 +81,15 @@ export class GamesComponent implements OnInit {
     }
   }
 
+  playGame (gameToPlay: Game)
+  {
+    this.router.navigate(['/games/'+ gameToPlay.id + '/play'])
+  }
+
   private updateGame (newGame: Game, sourceGame: Game)
   {
     sourceGame.players = newGame.players;
     sourceGame.createdBy = newGame.createdBy;
-  }
-
-  private moveToStartedGame (gameToStart : Game): void
-  {
-    //todo: redirecto to game
   }
   
   isLoggedIn(): boolean

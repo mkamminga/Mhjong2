@@ -1,20 +1,22 @@
 
 import {Router, ActivatedRoute, Params} from '@angular/router';
-import {OnInit, Component, Injectable} from '@angular/core';
+import {OnInit, OnDestroy, Component, Injectable} from '@angular/core';
 import { UserService } from '../services/UserService';
+import { Subscription }             from 'rxjs/Subscription';
 
 @Component({
   template: `<h2>Login</h2> <div *ngIf="getError() != ''" class="alert-box round alert">{{ getError()}}</div> <div *ngIf="getError() == ''" class="callout success">Userdata is set!</div>`,
 })
-export class LoginComponent implements OnInit { 
+export class LoginComponent implements OnInit, OnDestroy  { 
     private username:string = "";
     private error:string = "";
+    private subScription: Subscription;
 
     constructor(private userService: UserService, private activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
         // subscribe to router event
-        this.activatedRoute.queryParams.subscribe((params: Params) => {
+        this.subScription = this.activatedRoute.queryParams.subscribe((params: Params) => {
             if (params.hasOwnProperty('username') && params.hasOwnProperty('token'))
             {
               console.log("LoginComponent > ngOnInit: User details set username => "+ params['username'] + ", token => "+ params["token"]);
@@ -26,6 +28,10 @@ export class LoginComponent implements OnInit {
               this.error = "Missing data!";
             }
         });
+    }
+
+    ngOnDestroy() {
+        this.subScription.unsubscribe();
     }
 
     getError (): string
