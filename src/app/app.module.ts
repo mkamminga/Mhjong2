@@ -22,6 +22,9 @@ import { GameService }  from './services/GameService';
 import { GameTemplateService }  from './services/GameTemplateService';
 import { TileService }  from './services/TileService';
 
+//custom pipes
+import { SafeCss } from './pipes/SafeCss.pipe'
+
 //misc
 import { Config, APP_CONFIG }  from './Config';
 
@@ -58,7 +61,7 @@ class MainHttpServiceFactory {
 
 @NgModule({
   imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule, ReactiveFormsModule ],
-  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent],
+  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent, SafeCss],
   providers:[ 
     { 
       provide: APP_STORAGE, 

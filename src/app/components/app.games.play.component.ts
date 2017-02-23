@@ -15,6 +15,10 @@ import { Game }                           from '../Models/Game';
 import { Tile }                           from '../Models/Tile';
 import { GameTemplate }                   from '../Models/GameTemplate';
 
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
+
+
+
 
 @Component({
   moduleId: module.id, // for relative to current Component load paths
@@ -26,7 +30,7 @@ export class GamesPlayComponent implements OnInit {
     game: Game;
     layedTiles: Tile[];
 
-    constructor(private gameService: GameService, private gameTemplateService: GameTemplateService, private gameTileService: TileService, private activatedRoute: ActivatedRoute) {}
+    constructor(private gameService: GameService, private gameTemplateService: GameTemplateService, private gameTileService: TileService, private activatedRoute: ActivatedRoute, public _sanitizer: DomSanitizer) {}
 
     ngOnInit() 
     {

@@ -1,0 +1,12 @@
+#board 
+{
+    position: relative;
+
+    .tile {
+        position: absolute;
+        width: 70px;
+        height: 80px;
+        background-image: url('../images/sprite1.png');
+        background-size: 70px 3360px;
+    }
+}

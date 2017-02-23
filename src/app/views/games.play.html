@@ -1,3 +1,6 @@
 <h2>Game play</h2>
 
 <div *ngIf="game == null">Loading details...</div>
+<div id="board">
+    <div *ngFor="let tile of layedTiles" class="tile"  [ngStyle]="{ 'left': tile.xPos * 20  + 'px', 'top': tile.yPos * 22 +'px', 'background-position': '0 0', 'z-index': tile.zPos }"></div>
+</div>
