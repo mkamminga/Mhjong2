@@ -16,22 +16,42 @@ export class GameService
 {
     constructor (private mainService: MainHttpService) {}
 
-    getGames (): Observable<Game[]> 
+    getOpenGames (): Observable<Game[]> 
     {
-        return this.mainService.get("/games", [
-                            { 
-                                name : "state", 
-                                value: "open"
-                            }]
-                        )
-                        .map((res: Response) => { 
-                            return this.mainService.extractFromJsonData(res, (data: any) => {
-                                return this.createGameFromData(data);
-                            });
-                        })
-                        .catch((error) => {
-                            return this.mainService.handleError(error);
-                        });
+        return this.getGames([
+            {
+                name: "state",
+                value: "open"
+            }
+        ]);
+    }
+
+    getPlayingGames (user: string): Observable<Game[]> 
+    {
+        return this.getGames([
+            {
+                name: "state",
+                value: "playing"
+            },
+             {
+                name: "player",
+                value: user
+            }
+        ]);
+    }
+
+    getGames (params: [{ name: string, value: any}]) : Observable<Game[]>  
+    {
+        return this.mainService.get("/games", params
+                )
+                .map((res: Response) => { 
+                    return this.mainService.extractFromJsonData(res, (data: any) => {
+                        return this.createGameFromData(data);
+                    });
+                })
+                .catch((error) => {
+                    return this.mainService.handleError(error);
+                });
     }
 
     addGame (model: BasicGame): Observable<Game>
@@ -47,6 +67,15 @@ export class GameService
     {
         return this.mainService.post("/games/" + game.id + "/players", {})
                 .map((res: Response) => { return this.createGameFromData(res.json()); })
+                .catch((error) => {
+                    return this.mainService.handleError(error);
+                });
+    }
+
+    startGame (game: Game): Observable<Response>
+    {
+        return this.mainService.post("/games/" + game.id + "/start", {})
+                .map((res: Response) => { return res.json(); })
                 .catch((error) => {
                     return this.mainService.handleError(error);
                 });
@@ -77,7 +106,7 @@ export class GameService
 
     createGameFromData (data: Game): Game
     {
-        console.log("createGameFromData ");
+        //console.log("createGameFromData ");
         var owner = new Player(data.createdBy._id, data.createdBy.id, data.createdBy.name);
         var players:Player[] = [];
 
@@ -100,7 +129,7 @@ export class GameService
             data.state
         );
 
-        console.log(game);
+        //console.log(game);
         return game;
     }
 }

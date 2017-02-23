@@ -17,6 +17,11 @@ export class GamesComponent implements OnInit {
   errorMessage: string;
   games: Game[];
   currentPlayer: Player;
+  currentTab = '';
+  tabs:{} = {
+    "openGames" : () => { this.getOpenGames(); },
+    "playingGames" : () => { this.getPlayingGames(); }
+  };
 
   constructor(private userService: UserService, private gameService: GameService)
   {
@@ -25,16 +30,25 @@ export class GamesComponent implements OnInit {
 
   ngOnInit() 
   { 
-    this.getGames();
+    this.selectTab('openGames'); // select and apoint to default
   }
 
-  getGames () :void 
+  getOpenGames () :void 
   {
-    this.gameService.getGames()
+    this.gameService.getOpenGames()
                      .subscribe(
                        games => this.games = games,
                        error =>  this.errorMessage = <any>error, 
-                       () => console.log("GamesComponent > getGames > subscribe complete callback: Games loaded"));
+                       () => console.log("GamesComponent > getOpenGames > subscribe complete callback: Games loaded"));
+  }
+
+  getPlayingGames () :void 
+  {
+    this.gameService.getPlayingGames(this.currentPlayer.id)
+                     .subscribe(
+                       games => this.games = games,
+                       error =>  this.errorMessage = <any>error, 
+                       () => console.log("GamesComponent > getPlayingGames > subscribe complete callback: Games loaded"));
   }
 
   joinGame (game: Game): void 
@@ -48,14 +62,46 @@ export class GamesComponent implements OnInit {
 
   }
 
+  startGame (game: Game)
+  {
+    if (game.canStart(this.currentPlayer))
+    {
+        this.gameService.startGame(game)
+                  .subscribe(
+                    startedGame => console.log("GamesComponent > startGame > subscribe complete callback:game started"),
+                    error =>  console.log(error), 
+                    () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game"));
+    }
+    else
+    {
+      console.log("GamesComponent > startGame: game cannot be started!");
+    }
+  }
+
   private updateGame (newGame: Game, sourceGame: Game)
   {
     sourceGame.players = newGame.players;
     sourceGame.createdBy = newGame.createdBy;
   }
+
+  private moveToStartedGame (gameToStart : Game): void
+  {
+    //todo: redirecto to game
+  }
   
   isLoggedIn(): boolean
   {
     return this.userService.isLoggedIn();
+  }
+
+  selectTab(tab: string): void 
+  {
+    console.log(tab);
+    if (this.tabs.hasOwnProperty(tab))
+    {
+      this.currentTab = tab;
+      this.games = [];
+      this.tabs[tab]();
+    }
   }
 }
