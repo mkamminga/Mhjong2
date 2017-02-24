@@ -11,14 +11,10 @@ import { GameTemplateService }            from '../services/GameTemplateService'
 import { TileService }                    from '../services/TileService';
 
 //models
-import { Game }                           from '../Models/Game';
-import { Tile }                           from '../Models/Tile';
-import { GameTemplate }                   from '../Models/GameTemplate';
-
-import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-
-
-
+import { Game }                                         from '../Models/Game';
+import { Tile }                                         from '../Models/Tile';
+import { GameTemplate }                                 from '../Models/GameTemplate';
+import { TileLayoutManager, TilePosition }              from '../Models/TileLayout';
 
 @Component({
   moduleId: module.id, // for relative to current Component load paths
@@ -29,8 +25,17 @@ export class GamesPlayComponent implements OnInit {
     private subScription: Subscription;
     game: Game;
     layedTiles: Tile[];
+    
 
-    constructor(private gameService: GameService, private gameTemplateService: GameTemplateService, private gameTileService: TileService, private activatedRoute: ActivatedRoute, public _sanitizer: DomSanitizer) {}
+    selectedTile: Tile = null;
+    selectedTIleToMatch: Tile = null;
+
+    constructor(
+      private gameService: GameService, 
+      private gameTemplateService: GameTemplateService, 
+      private gameTileService: TileService, 
+      private tileLayoutManager : TileLayoutManager,
+      private activatedRoute: ActivatedRoute) {}
 
     ngOnInit() 
     {
@@ -74,6 +79,49 @@ export class GamesPlayComponent implements OnInit {
                     error =>  console.log(error), 
                     () => console.log("GamesPlayComponent > setGameDetails > subscribe complete callback: gametemplate fetched")
                   );
+    }
+
+    public calcTilePosition (tile: Tile): any 
+    {
+      let position = this.tileLayoutManager.calcTilePosition(tile);
+      return { 
+          'left': (position.x)  + 'px', 
+          'top': (position.y) +'px', 
+          'background-position': '0 '+ position.offset + 'px', 
+          'z-index': tile.zPos 
+      };
+    }
+
+    public matchTile (tile: Tile): void
+    {
+      console.log("Match tile");
+      if (this.selectedTile && this.selectedTIleToMatch)
+      {
+        //waiting for answer, be paitient
+        return;
+      }
+      if (this.selectedTile == null)
+      {
+        this.selectedTile = tile;
+      }
+      else
+      {
+        this.selectedTIleToMatch = tile;
+
+        this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
+            .subscribe(
+              response => {
+                this.selectedTile = null; // reset matches
+                this.selectedTIleToMatch = null;
+              },
+              error =>  {
+                console.log(error);
+                this.selectedTile = null; // reset matches
+                this.selectedTIleToMatch = null;
+              }, 
+              () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched")
+            );
+      }
     }
 
     ngOnDestroy() 

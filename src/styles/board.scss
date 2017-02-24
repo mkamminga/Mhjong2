@@ -1,12 +1,28 @@
+
+$board-tile-width: 369 * 0.15;
+$board-total-height: 20160 * 0.15;
+$board-tile-height: $board-total-height / 42;
+
 #board 
 {
     position: relative;
 
     .tile {
         position: absolute;
-        width: 70px;
-        height: 80px;
+        width: #{$board-tile-width}px;
+        height: #{$board-tile-height}px;
         background-image: url('../images/sprite1.png');
-        background-size: 70px 3360px;
+        background-size: #{$board-tile-width}px #{$board-total-height}px;
+
+        &:hover {
+            box-shadow: 4px 4px 2px rgba(30, 50,30, 0.4);
+            margin-top: 10px; 
+            border: 1px solid #990000;
+        }
+    }
+
+    .selected {
+        border: 1px solid green;
     }
 }
+

@@ -5,7 +5,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import { MainHttpService }          from './MainHttpService';
-import { Tile }                     from '../Models/Tile';
+import { Tile, TileSuite, TileMatch }                     from '../Models/Tile';
 
 @Injectable()
 export class TileService
@@ -25,8 +25,21 @@ export class TileService
             });
     }
 
+    postMatch (gameId: string, firstTile: Tile, tileToMatch: Tile)
+    {
+        let model = new TileMatch(firstTile.id, tileToMatch.id);
+        return this.mainService.post("/games/" + gameId + "/tiles/matches", JSON.stringify(model))
+            .map((res: Response) => {
+                return res.json()
+            })
+            .catch((error) => {
+                return this.mainService.handleError(error);
+            });
+    }
+
     createTileFromData (data: Tile): Tile
     {
-       return new Tile(data.xPos, data.yPos, data.zPos);
+        var tileSuite = new TileSuite(data.tile._id, data.tile.suit, data.tile.name, data.tile.matchesWholeSuit);   
+        return new Tile(data.xPos, data.yPos, data.zPos, data._id, tileSuite);
     }
 }

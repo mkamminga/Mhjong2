@@ -14,22 +14,26 @@ import {GamesNewComponent } from './components/app.games.new.component';
 import {GamesPlayComponent } from './components/app.games.play.component';
 
 //custom providers
-import { StorageDriverInterface, APP_STORAGE } from './services/Storage/StorageDriverInterface';
-import { LocalStorageService } from './services/Storage/LocalStorageService';
-import { MainHttpService }  from './services/MainHttpService';
-import { UserService }  from './services/UserService';
-import { GameService }  from './services/GameService';
-import { GameTemplateService }  from './services/GameTemplateService';
-import { TileService }  from './services/TileService';
+import { StorageDriverInterface, APP_STORAGE }    from './services/Storage/StorageDriverInterface';
+import { LocalStorageService }                    from './services/Storage/LocalStorageService';
+import { MainHttpService }                        from './services/MainHttpService';
+import { UserService }                            from './services/UserService';
+import { GameService }                            from './services/GameService';
+import { GameTemplateService }                    from './services/GameTemplateService';
+import { TileService }                            from './services/TileService';
+import { TileLayoutServiceFactory }               from './services/TileLayoutServiceFactory';
 
-//custom pipes
-import { SafeCss } from './pipes/SafeCss.pipe'
+//models
+import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './Models/TileLayout';
 
-//misc
+
+//misc, configurations
 import { Config, APP_CONFIG }  from './Config';
+import { factories }  from './Configurations/TileLayoutFactories';
 
 const configurationObject:Config = {
-  baseUrl: "http://mahjongmayhem.herokuapp.com"
+  baseUrl: "http://mahjongmayhem.herokuapp.com",
+  tileManager: "vertical"
 };
 
 export const appRoutes: Routes = [
@@ -59,9 +63,24 @@ class MainHttpServiceFactory {
   }
 }
 
+@Injectable()
+class TileModelFactory {
+  public static create (@Inject(APP_CONFIG) config: Config): TileLayoutManager {
+    for (let tileFactory of factories)
+    {
+      if (tileFactory.key == config.tileManager)
+      {
+        return tileFactory.factory();
+      }
+    }
+
+    return null;
+  }
+}
+
 @NgModule({
   imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule, ReactiveFormsModule ],
-  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent, SafeCss],
+  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent],
   providers:[ 
     { 
       provide: APP_STORAGE, 
@@ -79,6 +98,11 @@ class MainHttpServiceFactory {
       provide: MainHttpService, 
       useFactory:MainHttpServiceFactory.create, 
       deps: [Http, UserService, APP_CONFIG]
+    },
+    {
+      provide: TileLayoutManager, 
+      useFactory:TileModelFactory.create, 
+      deps: [APP_CONFIG]
     }
   ], 
   bootstrap:    [ DashBoardComponent ]
