@@ -21,7 +21,6 @@ import { UserService }                            from './services/UserService';
 import { GameService }                            from './services/GameService';
 import { GameTemplateService }                    from './services/GameTemplateService';
 import { TileService }                            from './services/TileService';
-import { TileLayoutServiceFactory }               from './services/TileLayoutServiceFactory';
 
 //models
 import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './Models/TileLayout';

@@ -66,9 +66,11 @@ export interface TilePosition {
 @Injectable()
 export class TileLayoutManager {
     private heightMuliplier = 0;
-    constructor (public tileConfig: TileLayout, private tileHeight:number, private muliplier:number)
+    private muliplier:number;
+    constructor (public tileConfig: TileLayout, private tileHeight:number)
     {
-        this.heightMuliplier =  this.muliplier + (this.muliplier * 0.32);
+        this.muliplier = tileHeight * 0.38;
+        this.heightMuliplier= this.muliplier +  (this.muliplier * 0.35);
     }
 
     public calcTilePosition (tile: Tile): TilePosition
@@ -94,9 +96,11 @@ export class TileLayoutManager {
             console.log("TileLayoutManager > calcTilePosition: Unknown tile suite or name for: "+ tile.tile.suit + " => "+ tile.tile.name)
         }
 
-        position.x          =    (tile.xPos * this.muliplier) - this.muliplier, 
-        position.y          =    (tile.yPos * this.heightMuliplier) - this.heightMuliplier; 
+        position.x          =   (tile.xPos / 2 * 34)  + (tile.zPos * 5.5); 
+        position.y          =   (tile.yPos / 2 * this.tileHeight * 0.94)  - (tile.zPos * 4);
         position.offset     =    offset * this.tileHeight; 
+
+        console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offset + " from " + offset);
 
         return position;
     }

@@ -1,6 +1,15 @@
-<h2>Game play</h2>
+
 
 <div *ngIf="game == null">Loading details...</div>
-<div id="board">
-    <div *ngFor="let tile of layedTiles" class="tile" [ngClass]="{'selected': tile == selectedTile || tile == selectedTIleToMatch }" (click)="matchTile(tile)" [ngStyle]="calcTilePosition(tile)"></div>
+<div class="row">
+    <h2>Game play</h2>
+    <div id="board" class="large-9 columns">
+        <div class="callout alert" [hidden]="errorMessage == ''" style="position: abslolute; z-index: 4; width: 100%; top: 0;">{{ errorMessage }}</div>
+        <div *ngFor="let tile of inGameTiles" class="tile" [ngClass]="{'selected': tile == selectedTile || tile == selectedTIleToMatch }" (click)="matchTile(tile)" [ngStyle]="calcTilePosition(tile)"></div>
+    </div>
+    <div class="large-3 columns callout">
+            <h3>Played tiles</h3>
+            <hr />
+            <div *ngFor="let tile of layedTiles"><strong>{{ tile.tile.suit + ' => ' +tile.tile.name }}</strong></div>
+    </div>
 </div>

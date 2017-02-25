@@ -11,10 +11,19 @@ import { Tile, TileSuite, TileMatch }                     from '../Models/Tile';
 export class TileService
 {
     constructor (private mainService: MainHttpService) {}
-
-    getGameTiles (gameId: string): Observable<Tile[]> 
+    getInGameTiles (gameId: string): Observable<Tile[]> 
     {
-        return this.mainService.get("/games/" + gameId + "/tiles")
+        return this.getGameTiles(gameId, false); 
+    }
+
+    getMatchedTiles (gameId: string): Observable<Tile[]> 
+    {
+        return this.getGameTiles(gameId, true); 
+    }
+
+    getGameTiles (gameId: string, match: boolean): Observable<Tile[]> 
+    {
+        return this.mainService.get("/games/" + gameId + "/tiles?matched=" + match)
             .map((res: Response) => { 
                 return this.mainService.extractFromJsonData(res, (data: any) => {
                     return this.createTileFromData(data);

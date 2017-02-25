@@ -4,6 +4,6 @@ import { chosenTileLayout} from '../Configurations/SpecialTileStyleVertical.conf
 export const factories:[{ key: string, factory:() => TileLayoutManager}] = [{
     key : "vertical",
     factory: () => {
-        return new TileLayoutManager(chosenTileLayout, 72, 26);
+        return new TileLayoutManager(chosenTileLayout, 48);
     }
 }];

@@ -24,11 +24,13 @@ import { TileLayoutManager, TilePosition }              from '../Models/TileLayo
 export class GamesPlayComponent implements OnInit {
     private subScription: Subscription;
     game: Game;
+    inGameTiles: Tile[];
     layedTiles: Tile[];
-    
 
     selectedTile: Tile = null;
     selectedTIleToMatch: Tile = null;
+
+    errorMessage:string = "";
 
     constructor(
       private gameService: GameService, 
@@ -45,6 +47,7 @@ export class GamesPlayComponent implements OnInit {
             if (params.hasOwnProperty('id'))
             {
                 this.getGamePlayDetails(params['id']);
+                this.getGamesTiles(params['id']);
             }
             else
             {
@@ -57,28 +60,29 @@ export class GamesPlayComponent implements OnInit {
     {
       this.gameService.getGame(gameId) // fetch game
                   .subscribe(
-                    game => this.setGameDetails(game),
+                    game => this.game = game,
                     error =>  console.log(error), 
                     () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: game fetched")
                   );
 
-      this.gameTileService.getGameTiles(gameId) // fetch layed tiles
+    }
+
+    private getGamesTiles (gameId: string)
+    {
+      
+      this.gameTileService.getInGameTiles(gameId) // fetch in game tiles
+            .subscribe(
+              inGameTiles => this.inGameTiles  = inGameTiles,
+              error =>  console.log(error), 
+              () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: ingame tiles fetched")
+            );
+
+      this.gameTileService.getMatchedTiles(gameId) // fetch layed tiles
             .subscribe(
               layedTiles => this.layedTiles  = layedTiles,
               error =>  console.log(error), 
-              () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched")
+              () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: layed tiles fetched")
             );
-    }
-
-    private setGameDetails (game: Game) 
-    {
-        this.game = game;
-        this.gameTemplateService.getGameTemplate(game.gameTemplate.id) // fetch and set 
-                  .subscribe(
-                    gameTemplate => this.game.gameTemplate = gameTemplate,
-                    error =>  console.log(error), 
-                    () => console.log("GamesPlayComponent > setGameDetails > subscribe complete callback: gametemplate fetched")
-                  );
     }
 
     public calcTilePosition (tile: Tile): any 
@@ -86,9 +90,9 @@ export class GamesPlayComponent implements OnInit {
       let position = this.tileLayoutManager.calcTilePosition(tile);
       return { 
           'left': (position.x)  + 'px', 
-          'top': (position.y) +'px', 
+          'top': (position.y ) +'px', 
           'background-position': '0 '+ position.offset + 'px', 
-          'z-index': tile.zPos 
+          'z-index': tile.yPos+ (tile.zPos * 2) 
       };
     }
 
@@ -111,17 +115,46 @@ export class GamesPlayComponent implements OnInit {
         this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
             .subscribe(
               response => {
+                this.layedTiles.push(this.selectedTile);
+                this.layedTiles.push(this.selectedTIleToMatch);
+
+                this.removeItem(this.selectedTile);
+                this.removeItem(this.selectedTIleToMatch);
+
                 this.selectedTile = null; // reset matches
                 this.selectedTIleToMatch = null;
               },
               error =>  {
                 console.log(error);
+                
+                this.errorMessage = error.message;
+
+                this.errorMessage = this.errorMessage.replace("{{tile}}", this.selectedTIleToMatch.tile.suit + " "+ this.selectedTIleToMatch.tile.name);
+
                 this.selectedTile = null; // reset matches
                 this.selectedTIleToMatch = null;
+
+
+                setTimeout(() => {
+                  this.errorMessage = "";
+                }, 1500);
               }, 
               () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched")
             );
       }
+    }
+
+    private removeItem (item: Tile): boolean
+    {
+      let index = this.inGameTiles.indexOf(item);
+
+      if (index >= 0)
+      {
+        this.inGameTiles.splice(index, 1);
+        console.log("remove item at index: "+ index);
+      }
+
+      return false;
     }
 
     ngOnDestroy() 
