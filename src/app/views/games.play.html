@@ -4,7 +4,7 @@
 <div class="row">
     <h2>Game play</h2>
     <div id="board" class="large-9 columns">
-        <div class="callout alert" [hidden]="errorMessage == ''" style="position: abslolute; z-index: 4; width: 100%; top: 0;">{{ errorMessage }}</div>
+        <div class="callout alert" [hidden]="errorMessage == ''" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">{{ errorMessage }}</div>
         <div *ngFor="let tile of inGameTiles" class="tile" [ngClass]="{'selected': tile == selectedTile || tile == selectedTIleToMatch }" (click)="matchTile(tile)" [ngStyle]="calcTilePosition(tile)"></div>
     </div>
     <div class="large-3 columns callout">

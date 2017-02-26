@@ -1,7 +1,7 @@
 
-$percentage: 0.10;
-$board-tile-width: 369 * $percentage;
-$board-total-height: 20160 * $percentage;
+$percentage: 1;
+$board-tile-width: 68 * $percentage;
+$board-total-height: 3251 * $percentage;
 $board-tile-height: $board-total-height / 42;
 
 #board 
@@ -10,10 +10,9 @@ $board-tile-height: $board-total-height / 42;
 
     .tile {
         position: absolute;
-        width: #{$board-tile-width}px;
-        height: #{$board-tile-height}px;
+        width: 35px;
+        height: 48px;
         background-image: url('../images/sprite1.png');
-        background-size: #{$board-tile-width}px #{$board-total-height}px;
 
         &:hover {
             box-shadow: 4px 4px 2px rgba(30, 50,30, 0.4);

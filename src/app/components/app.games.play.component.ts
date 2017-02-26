@@ -16,6 +16,8 @@ import { Tile }                                         from '../Models/Tile';
 import { GameTemplate }                                 from '../Models/GameTemplate';
 import { TileLayoutManager, TilePosition }              from '../Models/TileLayout';
 
+import * as io from "socket.io";
+
 @Component({
   moduleId: module.id, // for relative to current Component load paths
   templateUrl: '../views/games.play.html',
@@ -37,7 +39,10 @@ export class GamesPlayComponent implements OnInit {
       private gameTemplateService: GameTemplateService, 
       private gameTileService: TileService, 
       private tileLayoutManager : TileLayoutManager,
-      private activatedRoute: ActivatedRoute) {}
+      private activatedRoute: ActivatedRoute) {
+        io('');
+
+      }
 
     ngOnInit() 
     {
@@ -87,11 +92,16 @@ export class GamesPlayComponent implements OnInit {
 
     public calcTilePosition (tile: Tile): any 
     {
+      if (tile.tile.matchesWholeSuit)
+      {
+        console.log("Tile not whole suit: "+ tile.tile.suit + ": "+ tile.tile.name);
+      }
       let position = this.tileLayoutManager.calcTilePosition(tile);
       return { 
           'left': (position.x)  + 'px', 
           'top': (position.y ) +'px', 
-          'background-position': '0 '+ position.offset + 'px', 
+          'background-position-x': '0px',
+          'background-position-y': position.offset + 'px', 
           'z-index': tile.yPos+ (tile.zPos * 2) 
       };
     }
@@ -111,7 +121,8 @@ export class GamesPlayComponent implements OnInit {
       else
       {
         this.selectedTIleToMatch = tile;
-
+        console.log(this.selectedTile.tile.suit + " => " + this.selectedTile.tile.name);
+        console.log(this.selectedTIleToMatch.tile.suit + " => " + this.selectedTIleToMatch.tile.name);
         this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
             .subscribe(
               response => {
@@ -137,7 +148,7 @@ export class GamesPlayComponent implements OnInit {
 
                 setTimeout(() => {
                   this.errorMessage = "";
-                }, 1500);
+                }, 4000);
               }, 
               () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched")
             );
