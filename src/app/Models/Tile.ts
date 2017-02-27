@@ -1,3 +1,11 @@
+export class TilePlayerMatch {
+    constructor (
+            public foundBy: string,
+            public otherTileId: string,
+            public foundOn: string
+        ) {}
+}
+
 export class TileSuite {
     public id:string;
     constructor (
@@ -22,12 +30,13 @@ export class Tile {
         public yPos: number,
         public zPos: number,
         public _id: string = '',
-        public tile: TileSuite = null
+        public tile: TileSuite = null,
+        public match: TilePlayerMatch = null
     ) {
         this.id = _id;
     }
 
-    match (tile: TileSuite): boolean
+    isMatch (tile: TileSuite): boolean
     {
         if (this.tile)
         {

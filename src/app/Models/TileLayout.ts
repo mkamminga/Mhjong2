@@ -81,6 +81,19 @@ export class TileLayoutManager {
             offset  : 0
         };
 
+        let offset = this.getTileOffset(tile);
+
+        position.x          =   (tile.xPos / 2 * 34)  + (tile.zPos * 5.5); 
+        position.y          =   (tile.yPos / 2 * this.tileHeight * 0.94)  - (tile.zPos * 4);
+        position.offset     =    offset; 
+
+        //console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offset + " from " + offset);
+
+        return position;
+    }
+
+    public getTileOffset (tile: Tile): number
+    {
         let offset = -1;
         let suit =  0;
         if (this.tileConfig.hasOwnProperty(tile.tile.suit)){
@@ -96,13 +109,7 @@ export class TileLayoutManager {
             console.log("TileLayoutManager > calcTilePosition: Unknown tile suite or name for: "+ tile.tile.suit + " => "+ tile.tile.name)
         }
 
-        position.x          =   (tile.xPos / 2 * 34)  + (tile.zPos * 5.5); 
-        position.y          =   (tile.yPos / 2 * this.tileHeight * 0.94)  - (tile.zPos * 4);
-        position.offset     =    -(offset * this.tileHeight); 
-
-        //console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offset + " from " + offset);
-
-        return position;
+        return -(offset * this.tileHeight);
     }
 
 }

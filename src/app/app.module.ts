@@ -13,6 +13,9 @@ import { GamesComponent }  from './components/app.games.component';
 import {GamesNewComponent } from './components/app.games.new.component';
 import {GamesPlayComponent } from './components/app.games.play.component';
 
+//pipes
+import { TileMatchPipe } from './Pipes/TileMatch.pipe'
+
 //custom providers
 import { StorageDriverInterface, APP_STORAGE }    from './services/Storage/StorageDriverInterface';
 import { LocalStorageService }                    from './services/Storage/LocalStorageService';
@@ -79,7 +82,7 @@ class TileModelFactory {
 
 @NgModule({
   imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule, ReactiveFormsModule ],
-  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent],
+  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent, TileMatchPipe],
   providers:[ 
     { 
       provide: APP_STORAGE, 

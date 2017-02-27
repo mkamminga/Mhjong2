@@ -16,23 +16,26 @@ import { Tile }                                         from '../Models/Tile';
 import { GameTemplate }                                 from '../Models/GameTemplate';
 import { TileLayoutManager, TilePosition }              from '../Models/TileLayout';
 
-import * as io from "socket.io";
+import * as io from "socket.io-client";
 
 @Component({
   moduleId: module.id, // for relative to current Component load paths
-  templateUrl: '../views/games.play.html',
+  templateUrl: '../views/games.play.html'
 })
 
 export class GamesPlayComponent implements OnInit {
     private subScription: Subscription;
-    game: Game;
+    game: Game = null;
     inGameTiles: Tile[];
-    layedTiles: Tile[];
+    matching:boolean = false;
 
     selectedTile: Tile = null;
     selectedTIleToMatch: Tile = null;
 
     errorMessage:string = "";
+
+    private socket:SocketIOClient.Socket = null;
+
 
     constructor(
       private gameService: GameService, 
@@ -40,7 +43,6 @@ export class GamesPlayComponent implements OnInit {
       private gameTileService: TileService, 
       private tileLayoutManager : TileLayoutManager,
       private activatedRoute: ActivatedRoute) {
-        io('');
 
       }
 
@@ -53,6 +55,7 @@ export class GamesPlayComponent implements OnInit {
             {
                 this.getGamePlayDetails(params['id']);
                 this.getGamesTiles(params['id']);
+                this.setUpSocket(params['id']);
             }
             else
             {
@@ -81,21 +84,48 @@ export class GamesPlayComponent implements OnInit {
               error =>  console.log(error), 
               () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: ingame tiles fetched")
             );
+    }
 
-      this.gameTileService.getMatchedTiles(gameId) // fetch layed tiles
-            .subscribe(
-              layedTiles => this.layedTiles  = layedTiles,
-              error =>  console.log(error), 
-              () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: layed tiles fetched")
-            );
+    private setUpSocket (gameId: string) {
+      this.socket = io('http://mahjongmayhem.herokuapp.com:80?gameId='+ gameId).connect();
+      this.socket.on('connect', (object: any) => {
+        console.log("Connected -> ");
+      });
+      
+      this.socket.on('start', (object: any) => {
+        console.log("STart -> ");
+        console.log(object);
+      });
+
+      this.socket.on('match', (matches: Tile[]) => {
+        console.log("match -> ");
+        for (let item of matches){
+          console.log(item);
+          if (this.selectedTile && item._id == this.selectedTile._id)
+          {
+            this.selectedTile = null;
+          }
+          else if (this.selectedTIleToMatch && item._id == this.selectedTIleToMatch._id)
+          {
+            this.selectedTIleToMatch = null;
+          }
+          else
+          {
+            break;
+          }
+
+          this.setTileMatchedBy(item);
+        }
+
+        if (this.selectedTile != null || this.selectedTIleToMatch != null)
+        {
+          console.log("Some error must have occured!");
+        }
+      });
     }
 
     public calcTilePosition (tile: Tile): any 
     {
-      if (tile.tile.matchesWholeSuit)
-      {
-        console.log("Tile not whole suit: "+ tile.tile.suit + ": "+ tile.tile.name);
-      }
       let position = this.tileLayoutManager.calcTilePosition(tile);
       return { 
           'left': (position.x)  + 'px', 
@@ -106,9 +136,17 @@ export class GamesPlayComponent implements OnInit {
       };
     }
 
+    public calcTileOffset (tile: Tile) 
+    {
+      let offset = this.tileLayoutManager.getTileOffset(tile);
+      return {
+          'background-position-x': '0px',
+          'background-position-y': offset+ 'px'
+      };
+    }
+
     public matchTile (tile: Tile): void
     {
-      console.log("Match tile");
       if (this.selectedTile && this.selectedTIleToMatch)
       {
         //waiting for answer, be paitient
@@ -121,55 +159,60 @@ export class GamesPlayComponent implements OnInit {
       else
       {
         this.selectedTIleToMatch = tile;
-        console.log(this.selectedTile.tile.suit + " => " + this.selectedTile.tile.name);
-        console.log(this.selectedTIleToMatch.tile.suit + " => " + this.selectedTIleToMatch.tile.name);
-        this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
-            .subscribe(
-              response => {
-                this.layedTiles.push(this.selectedTile);
-                this.layedTiles.push(this.selectedTIleToMatch);
 
-                this.removeItem(this.selectedTile);
-                this.removeItem(this.selectedTIleToMatch);
-
-                this.selectedTile = null; // reset matches
-                this.selectedTIleToMatch = null;
-              },
-              error =>  {
-                console.log(error);
-                
-                this.errorMessage = error.message;
-
-                this.errorMessage = this.errorMessage.replace("{{tile}}", this.selectedTIleToMatch.tile.suit + " "+ this.selectedTIleToMatch.tile.name);
-
-                this.selectedTile = null; // reset matches
-                this.selectedTIleToMatch = null;
-
-
-                setTimeout(() => {
-                  this.errorMessage = "";
-                }, 4000);
-              }, 
-              () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched")
-            );
+        if (!tile.isMatch(this.selectedTile.tile))
+        {
+          this.setErrorMessage("Selected tiles are not a match!");
+          this.selectedTile = null; // reset matches
+          this.selectedTIleToMatch = null;
+        }
+        else
+        {
+          this.matching = true;
+          this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
+              .subscribe(
+                response => {
+                  console.log("Success");
+                },
+                error =>  {
+                  console.log(error);
+                  this.setErrorMessage(error.message.replace("{{tile}}", this.selectedTIleToMatch.tile.suit + " "+ this.selectedTIleToMatch.tile.name));
+                  this.matching = false;
+                  this.selectedTile = null; // reset matches
+                  this.selectedTIleToMatch = null;
+                }, 
+                () => {
+                  console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched");
+                  this.matching = false;
+                }
+              );
+        }
       }
     }
 
-    private removeItem (item: Tile): boolean
+    private setTileMatchedBy (itemThatHasMatch: Tile): void
     {
-      let index = this.inGameTiles.indexOf(item);
+      for (var i = 0; i< this.inGameTiles.length; i++ ){
+         if (itemThatHasMatch._id == this.inGameTiles[i]._id)
+         {
+            this.inGameTiles[i].match = itemThatHasMatch.match;
+            return ;
+         }
+      };     
+    }
 
-      if (index >= 0)
-      {
-        this.inGameTiles.splice(index, 1);
-        console.log("remove item at index: "+ index);
-      }
+    private setErrorMessage (message: string)
+    {
+      this.errorMessage = message;
 
-      return false;
+      setTimeout(() => {
+        this.errorMessage = "";
+      }, 3500);
     }
 
     ngOnDestroy() 
     {
         this.subScription.unsubscribe();
+        this.socket.close();
     }
 }
