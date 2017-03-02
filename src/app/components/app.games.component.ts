@@ -9,7 +9,7 @@ import { Player }                   from '../Models/Player';
 
 import { GamesOverviewOpenComponent } from './games-overview/app.games.overview.open.component';
 import { GamesOverviewPlayingComponent } from './games-overview/app.games.overview.playing.component';
-
+import { GamesOverviewClosedComponent } from './games-overview/app.games.overview.closed.component';
 
 @Component({
   moduleId: module.id, // for relative to current Component load paths
@@ -20,12 +20,22 @@ export class GamesComponent implements OnInit {
   errorMessage: string;
   currentPlayer: Player;
 
-  constructor(protected userService: UserService, private gameOverview: GamesOverviewOpenComponent, private gamePlaying: GamesOverviewPlayingComponent){}
+  constructor(
+    protected userService: UserService, 
+    private gameOverview: GamesOverviewOpenComponent, 
+    private gamePlaying: GamesOverviewPlayingComponent, 
+    private gameClosed: GamesOverviewClosedComponent){}
 
   ngOnInit ()
   {
     this.gameOverview.getOpenGames();
-    this.gamePlaying.getPlayingGames();
+    setTimeout(() => {
+        this.gamePlaying.getPlayingGames();
+        setTimeout(() => {
+          this.gameClosed.getClosedGames();
+        }, 2000);
+    }, 2000);
+
   }
 
   protected isLoggedIn(): boolean

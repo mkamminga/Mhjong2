@@ -30,7 +30,7 @@ Please login to view any games!
         </tab>
 
         <tab tabTitle="Playing games">
-           <div *ngFor="let game of gamePlaying.games" class="callout">
+           <div *ngFor="let game of (gamePlaying.games | gameContainsPlayer:gameOverview.currentPlayer.id:true)" class="callout">
                 <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
                 <div>Started at: <strong>{{ game.startedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
                 <hr />
@@ -45,9 +45,25 @@ Please login to view any games!
         </tab>
 
         <tab tabTitle="Spectate games">
-           <div *ngFor="let game of gamePlaying.games" class="callout">
+           <div *ngFor="let game of (gamePlaying.games | gameContainsPlayer:gameOverview.currentPlayer.id:false)" class="callout">
                 <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
                 <div>Started at: <strong>{{ game.startedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
+                <hr />
+
+                <h6>Joined players</h6>
+                <ul *ngIf="game.players.length > 0 ">
+                    <li *ngFor="let player of game.players"> {{ player.name }}</li>
+                </ul>
+
+                <button type="button" class="small button success" (click)="gamePlaying.playGame(game)">Spectate</button>
+            </div>
+        </tab>
+
+        <tab tabTitle="Ended games">
+           <div *ngFor="let game of gameClosed.games" class="callout">
+                <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
+                <div>Started at: <strong>{{ game.startedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
+                <div>Ended at: <strong>{{ game.endedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
                 <hr />
 
                 <h6>Players</h6>
@@ -55,7 +71,7 @@ Please login to view any games!
                     <li *ngFor="let player of game.players"> {{ player.name }}</li>
                 </ul>
 
-                <button type="button" class="small button success" (click)="gamePlaying.playGame(game)">Spectate</button>
+                <button type="button" class="small button success" (click)="gamePlaying.playGame(game)">View</button>
             </div>
         </tab>
     </tabs>

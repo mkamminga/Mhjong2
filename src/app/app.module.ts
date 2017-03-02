@@ -12,6 +12,7 @@ import { LoginComponent }  from './components/app.login.component';
 import {GamesComponent } from './components/app.games.component';
 import {GamesOverviewOpenComponent } from './components/games-overview/app.games.overview.open.component';
 import {GamesOverviewPlayingComponent } from './components/games-overview/app.games.overview.playing.component';
+import { GamesOverviewClosedComponent } from './components/games-overview/app.games.overview.closed.component';
 
 import {GamesNewComponent } from './components/app.games.new.component';
 import {GamesPlayComponent } from './components/app.games.play.component';
@@ -23,7 +24,7 @@ import {PageNotFoundComponent } from './components/app.404.component';
 
 //pipes
 import { TileMatchPipe } from './Pipes/TileMatch.pipe';
-import { GameStatePipe } from './Pipes/GameState.pipe';
+import { GameContainingPlayerPipe } from './Pipes/GameContainingPlayer.pipe';
 
 
 //custom providers
@@ -105,12 +106,13 @@ class TileModelFactory {
       //404
       PageNotFoundComponent,
     //pipes
-    TileMatchPipe, GameStatePipe  
+    TileMatchPipe, GameContainingPlayerPipe  
   ],
   providers:[ 
+    //Injectable tab components
     GamesOverviewOpenComponent,
     GamesOverviewPlayingComponent,
-    
+    GamesOverviewClosedComponent,
     { 
       provide: APP_STORAGE, 
       useClass: LocalStorageService

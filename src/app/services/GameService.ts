@@ -26,24 +26,29 @@ export class GameService
         ]);
     }
 
-    getPlayingGames (user: string): Observable<Game[]> 
+    getPlayingGames (): Observable<Game[]> 
     {
         return this.getGames([
             {
                 name: "state",
                 value: "playing"
-            },
-             {
-                name: "player",
-                value: user
+            }
+        ]);
+    }
+
+    getClosedGames (): Observable<Game[]> 
+    {
+        return this.getGames([
+            {
+                name: "state",
+                value: "finished"
             }
         ]);
     }
 
     getGames (params: [{ name: string, value: any}]) : Observable<Game[]>  
     {
-        return this.mainService.get("/games", params
-                )
+        return this.mainService.get("/games", params)
                 .map((res: Response) => { 
                     return this.mainService.extractFromJsonData(res, (data: any) => {
                         return this.createGameFromData(data);

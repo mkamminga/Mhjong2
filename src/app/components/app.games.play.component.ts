@@ -12,6 +12,7 @@ import { TileService }                    from '../services/TileService';
 
 //models
 import { Game }                                         from '../Models/Game';
+import { Player }                                       from '../Models/Player';
 import { Tile }                                         from '../Models/Tile';
 import { GameTemplate }                                 from '../Models/GameTemplate';
 import { TileLayoutManager, TilePosition }              from '../Models/TileLayout';
@@ -44,7 +45,8 @@ export class GamesPlayComponent implements OnInit {
       private gameTileService: TileService, 
       private tileLayoutManager : TileLayoutManager,
       private router : Router,
-      private activatedRoute: ActivatedRoute) 
+      private activatedRoute: ActivatedRoute,
+      private userService: UserService) 
     {}
 
     ngOnInit() 
@@ -69,7 +71,16 @@ export class GamesPlayComponent implements OnInit {
     {
       this.gameService.getGame(gameId) // fetch game
                   .subscribe(
-                    game => this.game = game,
+                    game => {
+                      this.game = game;
+
+                      if (game.state == "playing" && (game.players.findIndex((player: Player) => {
+                          return player.id == this.userService.getUserName()
+                      }) >= 0))
+                      {
+                        this.spectator = false;
+                      }
+                    },
                     error =>  console.log(error), 
                     () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: game fetched")
                   );
