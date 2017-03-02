@@ -83,8 +83,8 @@ export class TileLayoutManager {
 
         let offset = this.getTileOffset(tile);
 
-        position.x          =   (tile.xPos / 2 * 34)  + (tile.zPos * 5.5); 
-        position.y          =   (tile.yPos / 2 * this.tileHeight * 0.94)  - (tile.zPos * 4);
+        position.x          =   (tile.xPos / 2 * 33)  + (tile.zPos * 5); 
+        position.y          =   (tile.yPos / 2 * this.tileHeight * 0.95)  - (tile.zPos * 4);
         position.offset     =    offset; 
 
         //console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offset + " from " + offset);

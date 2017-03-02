@@ -6,18 +6,12 @@ Please login to view any games!
     <h2>Games</h2>
     <hr />
     <div>
-        <a class="button large secondary" routerLink="new-game">Create new game</a>
+        <a class="button large secondary" routerLink="/games/new-game">Create new game</a>
     </div>
     <!-- Tabs -->
-    <ul class="tabs" data-tabs>
-        <li class="tabs-title is-active"><a aria-selected="true" (click)="selectTab('openGames')">Open games</a></li>
-        <li class="tabs-title"><a (click)="selectTab('playingGames')">Currently playing</a></li>
-        <li class="tabs-title"><a (click)="selectTab('closedGames')">Closed games</a></li>
-    </ul>
-    <div class="tabs-content">
-        <!-- Open games -->
-        <section role="tabpanel" [hidden]="currentTab != 'openGames'" class="content">
-            <div class="callout rounded"  *ngFor="let game of games">
+    <tabs>
+        <tab tabTitle="Open games">
+            <div *ngFor="let game of gameOverview.games" class="callout">
                 <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
 
                 <hr />
@@ -29,15 +23,14 @@ Please login to view any games!
                 </ul>
 
                 <div>
-                    <button type="button" class="small button success" *ngIf="game.canStart(currentPlayer)" (click)="startGame(game)">Start</button>
-                    <button type="button" class="small button warning" *ngIf="game.canJoin(currentPlayer)" (click)="joinGame(game)">Join game</button> 
+                    <button type="button" class="small button success" *ngIf="game.canStart(gameOverview.currentPlayer)" (click)="gameOverview.startGame(game)">Start</button>
+                    <button type="button" class="small button warning" *ngIf="game.canJoin(gameOverview.currentPlayer)" (click)="gameOverview.joinGame(game)">Join game</button> 
                 </div>
             </div>
-        </section>
-        <!-- Currently Playing games -->
-        <section role="tabpanel" [hidden]="currentTab != 'playingGames'" class="content">
-            
-            <div class="callout rounded"  *ngFor="let game of games">
+        </tab>
+
+        <tab tabTitle="Playing games">
+           <div *ngFor="let game of gamePlaying.games" class="callout">
                 <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
                 <div>Started at: <strong>{{ game.startedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
                 <hr />
@@ -47,14 +40,24 @@ Please login to view any games!
                     <li *ngFor="let player of game.players"> {{ player.name }}</li>
                 </ul>
 
-                <button type="button" class="small button success" (click)="playGame(game)">Play</button>
+                <button type="button" class="small button success" (click)="gamePlaying.playGame(game)">Play</button>
             </div>
-            
-        </section>
-        <!-- Played games -->
-        <section role="tabpanel" [hidden]="currentTab != 'closedGames'" class="content">
-            <h2>Third panel content goes here...</h2>
-        </section>
-    </div>
+        </tab>
+
+        <tab tabTitle="Spectate games">
+           <div *ngFor="let game of gamePlaying.games" class="callout">
+                <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
+                <div>Started at: <strong>{{ game.startedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
+                <hr />
+
+                <h6>Players</h6>
+                <ul *ngIf="game.players.length > 0 ">
+                    <li *ngFor="let player of game.players"> {{ player.name }}</li>
+                </ul>
+
+                <button type="button" class="small button success" (click)="gamePlaying.playGame(game)">Spectate</button>
+            </div>
+        </tab>
+    </tabs>
 </div>
 

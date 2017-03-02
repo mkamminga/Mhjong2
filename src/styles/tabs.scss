@@ -1,0 +1,19 @@
+.menu.tabs {
+    li {
+        padding: 0.5rem 1rem ;
+
+        &:hover {
+            background: #144;
+            cursor: pointer;
+            color: white;
+        }
+        &.active {
+            background: #000;
+            color: white;
+        }
+    }
+}
+
+.tab-content {
+    padding-top: 1rem;
+}

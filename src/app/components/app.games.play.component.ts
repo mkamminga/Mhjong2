@@ -33,6 +33,7 @@ export class GamesPlayComponent implements OnInit {
     selectedTIleToMatch: Tile = null;
 
     errorMessage:string = "";
+    spectator: boolean = true;
 
     private socket:SocketIOClient.Socket = null;
 
@@ -42,9 +43,9 @@ export class GamesPlayComponent implements OnInit {
       private gameTemplateService: GameTemplateService, 
       private gameTileService: TileService, 
       private tileLayoutManager : TileLayoutManager,
-      private activatedRoute: ActivatedRoute) {
-
-      }
+      private router : Router,
+      private activatedRoute: ActivatedRoute) 
+    {}
 
     ngOnInit() 
     {
@@ -88,19 +89,18 @@ export class GamesPlayComponent implements OnInit {
 
     private setUpSocket (gameId: string) {
       this.socket = io('http://mahjongmayhem.herokuapp.com:80?gameId='+ gameId).connect();
-      this.socket.on('connect', (object: any) => {
-        console.log("Connected -> ");
+      this.socket.on('disconnect', () => {
+        this.setErrorMessage("Disconnected with server!");
       });
-      
+
       this.socket.on('start', (object: any) => {
         console.log("STart -> ");
-        console.log(object);
       });
 
       this.socket.on('match', (matches: Tile[]) => {
-        console.log("match -> ");
+
         for (let item of matches){
-          console.log(item);
+
           if (this.selectedTile && item._id == this.selectedTile._id)
           {
             this.selectedTile = null;
@@ -121,6 +121,11 @@ export class GamesPlayComponent implements OnInit {
         {
           console.log("Some error must have occured!");
         }
+      });
+
+      this.socket.on('end', () => {
+        console.log("Game has endend");
+        this.setErrorMessage("Game has ended! No more matches posible!");
       });
     }
 
@@ -147,14 +152,18 @@ export class GamesPlayComponent implements OnInit {
 
     public matchTile (tile: Tile): void
     {
-      if (this.selectedTile && this.selectedTIleToMatch)
+      if (this.selectedTile && this.selectedTIleToMatch || this.spectator)
       {
-        //waiting for answer, be paitient
+        //waiting for answer, be paitient, or just a spectator
         return;
       }
       if (this.selectedTile == null)
       {
         this.selectedTile = tile;
+      }
+      else if (this.selectedTile == tile)
+      {
+        this.selectedTile = null // deselect
       }
       else
       {

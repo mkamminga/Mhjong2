@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { Observable }             from 'rxjs/Observable';
 import { Router } from '@angular/router';
 
@@ -7,6 +7,9 @@ import { GameService }            from '../services/GameService';
 import { Game }                   from '../Models/Game';
 import { Player }                   from '../Models/Player';
 
+import { GamesOverviewOpenComponent } from './games-overview/app.games.overview.open.component';
+import { GamesOverviewPlayingComponent } from './games-overview/app.games.overview.playing.component';
+
 
 @Component({
   moduleId: module.id, // for relative to current Component load paths
@@ -14,97 +17,19 @@ import { Player }                   from '../Models/Player';
 })
 
 export class GamesComponent implements OnInit {
-  mode = 'Observable'; 
   errorMessage: string;
-  games: Game[];
   currentPlayer: Player;
-  currentTab = '';
-  tabs:{} = {
-    "openGames" : () => { this.getOpenGames(); },
-    "playingGames" : () => { this.getPlayingGames(); }
-  };
 
-  constructor(private userService: UserService, private gameService: GameService, private router: Router)
+  constructor(protected userService: UserService, private gameOverview: GamesOverviewOpenComponent, private gamePlaying: GamesOverviewPlayingComponent){}
+
+  ngOnInit ()
   {
-    this.currentPlayer = new Player(userService.getUserName(), null, null);
+    this.gameOverview.getOpenGames();
+    this.gamePlaying.getPlayingGames();
   }
 
-  ngOnInit() 
-  { 
-    this.selectTab('openGames'); // select and apoint to default
-  }
-
-  getOpenGames () :void 
-  {
-    this.gameService.getOpenGames()
-                     .subscribe(
-                       games => this.games = games,
-                       error =>  this.errorMessage = <any>error, 
-                       () => console.log("GamesComponent > getOpenGames > subscribe complete callback: Games loaded"));
-  }
-
-  getPlayingGames () :void 
-  {
-    this.gameService.getPlayingGames(this.currentPlayer.id)
-                     .subscribe(
-                       games => this.games = games,
-                       error =>  this.errorMessage = <any>error, 
-                       () => console.log("GamesComponent > getPlayingGames > subscribe complete callback: Games loaded"));
-  }
-
-  joinGame (game: Game): void 
-  {
-
-     this.gameService.joinGame(game)
-                     .subscribe(
-                       updatedGame => this.updateGame(updatedGame, game),
-                       error =>  console.log(error), 
-                       () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game")
-                    );
-
-  }
-
-  startGame (game: Game): void
-  {
-    if (game.canStart(this.currentPlayer))
-    {
-        this.gameService.startGame(game)
-                  .subscribe(
-                    startedGame => this.playGame(game),
-                    error =>  console.log(error), 
-                    () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game")
-                  );
-    }
-    else
-    {
-      console.log("GamesComponent > startGame: game cannot be started!");
-    }
-  }
-
-  playGame (gameToPlay: Game)
-  {
-    this.router.navigate(['/games/'+ gameToPlay.id + '/play'])
-  }
-
-  private updateGame (newGame: Game, sourceGame: Game)
-  {
-    sourceGame.players = newGame.players;
-    sourceGame.createdBy = newGame.createdBy;
-  }
-  
-  isLoggedIn(): boolean
+  protected isLoggedIn(): boolean
   {
     return this.userService.isLoggedIn();
-  }
-
-  selectTab(tab: string): void 
-  {
-    console.log(tab);
-    if (this.tabs.hasOwnProperty(tab))
-    {
-      this.currentTab = tab;
-      this.games = [];
-      this.tabs[tab]();
-    }
   }
 }

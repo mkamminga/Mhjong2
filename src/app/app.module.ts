@@ -9,12 +9,22 @@ import { ReactiveFormsModule } from '@angular/forms';
 //components
 import { DashBoardComponent }  from './components/app.dashboard.component';
 import { LoginComponent }  from './components/app.login.component';
-import { GamesComponent }  from './components/app.games.component';
+import {GamesComponent } from './components/app.games.component';
+import {GamesOverviewOpenComponent } from './components/games-overview/app.games.overview.open.component';
+import {GamesOverviewPlayingComponent } from './components/games-overview/app.games.overview.playing.component';
+
 import {GamesNewComponent } from './components/app.games.new.component';
 import {GamesPlayComponent } from './components/app.games.play.component';
 
+import {Tabs } from './components/tabs/app.tabs.component';
+import {Tab } from './components/tabs/app.tab.component';
+
+import {PageNotFoundComponent } from './components/app.404.component';
+
 //pipes
-import { TileMatchPipe } from './Pipes/TileMatch.pipe'
+import { TileMatchPipe } from './Pipes/TileMatch.pipe';
+import { GameStatePipe } from './Pipes/GameState.pipe';
+
 
 //custom providers
 import { StorageDriverInterface, APP_STORAGE }    from './services/Storage/StorageDriverInterface';
@@ -44,7 +54,11 @@ export const appRoutes: Routes = [
     component: GamesComponent 
   },
   { 
-    path: 'new-game', 
+    path: 'games', 
+    component: GamesComponent 
+  },
+  { 
+    path: 'games/new-game', 
     component: GamesNewComponent 
   },
   {
@@ -55,7 +69,7 @@ export const appRoutes: Routes = [
     path: 'login',
     component: LoginComponent,
   },
-  { path: '**', component: GamesComponent }
+  { path: '**',component: PageNotFoundComponent }
 ];
 
 @Injectable()
@@ -82,8 +96,21 @@ class TileModelFactory {
 
 @NgModule({
   imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule, ReactiveFormsModule ],
-  declarations: [DashBoardComponent, LoginComponent, GamesComponent, GamesNewComponent, GamesPlayComponent, TileMatchPipe],
+  declarations: [
+    //Components
+    DashBoardComponent, LoginComponent, GamesNewComponent, GamesPlayComponent, GamesComponent,
+      //Components: game tabs
+      //tabs
+      Tabs, Tab, 
+      //404
+      PageNotFoundComponent,
+    //pipes
+    TileMatchPipe, GameStatePipe  
+  ],
   providers:[ 
+    GamesOverviewOpenComponent,
+    GamesOverviewPlayingComponent,
+    
     { 
       provide: APP_STORAGE, 
       useClass: LocalStorageService
@@ -106,6 +133,7 @@ class TileModelFactory {
       useFactory:TileModelFactory.create, 
       deps: [APP_CONFIG]
     }
+    
   ], 
   bootstrap:    [ DashBoardComponent ]
 })
