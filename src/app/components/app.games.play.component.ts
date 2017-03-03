@@ -1,11 +1,12 @@
-import {OnInit, OnDestroy, Component, Injectable} from '@angular/core';
+import {OnInit, OnDestroy, Component, Injectable, Inject, ReflectiveInjector} from '@angular/core';
 import { Observable }                       from 'rxjs/Observable';
 import {Router, ActivatedRoute, Params}     from '@angular/router';
-
+import * as io from "socket.io-client";
 
 import { UserService }                    from '../services/UserService';
 import { Subscription }                   from 'rxjs/Subscription';
 
+import {StorageDriverInterface, APP_STORAGE } from '../services/Storage/StorageDriverInterface';
 import { GameService }                    from '../services/GameService';
 import { GameTemplateService }            from '../services/GameTemplateService';
 import { TileService }                    from '../services/TileService';
@@ -16,14 +17,15 @@ import { Player }                                       from '../Models/Player';
 import { Tile }                                         from '../Models/Tile';
 import { GameTemplate }                                 from '../Models/GameTemplate';
 import { TileLayoutManager, TilePosition }              from '../Models/TileLayout';
+import { Config, APP_CONFIG }  from '../Config';
+import { TileModelFactory }  from '../Configurations/TileLayoutFactories';
 
-import * as io from "socket.io-client";
 
 @Component({
   moduleId: module.id, // for relative to current Component load paths
   templateUrl: '../views/games.play.html'
 })
-
+@Injectable()
 export class GamesPlayComponent implements OnInit {
     private subScription: Subscription;
     game: Game = null;
@@ -37,28 +39,34 @@ export class GamesPlayComponent implements OnInit {
     spectator: boolean = true;
 
     private socket:SocketIOClient.Socket = null;
-
+    layoutManagerType:string = "";
+    private tileLayoutManager : TileLayoutManager;
 
     constructor(
+      @Inject(APP_CONFIG) private config: Config,
+      @Inject(APP_STORAGE) private storage: StorageDriverInterface,
       private gameService: GameService, 
       private gameTemplateService: GameTemplateService, 
       private gameTileService: TileService, 
-      private tileLayoutManager : TileLayoutManager,
+      
       private router : Router,
       private activatedRoute: ActivatedRoute,
       private userService: UserService) 
-    {}
+    {
+      this.layoutManagerType = config.tileManager;
+      this.tileLayoutManager = TileModelFactory.create(config.tileManager);
+    }
 
     ngOnInit() 
     {
         // subscribe to router event
         this.subScription = this.activatedRoute.params.subscribe((params: Params) => {
-          console.log(params);
+          //console.log(params);
             if (params.hasOwnProperty('id'))
             {
                 this.getGamePlayDetails(params['id']);
                 this.getGamesTiles(params['id']);
-                this.setUpSocket(params['id']);
+                this.setUpSocket(this.config.baseUrl + ':80?gameId='+ params['id']);
             }
             else
             {
@@ -98,8 +106,8 @@ export class GamesPlayComponent implements OnInit {
             );
     }
 
-    private setUpSocket (gameId: string) {
-      this.socket = io('http://mahjongmayhem.herokuapp.com:80?gameId='+ gameId).connect();
+    private setUpSocket (url: string) {
+      this.socket = io(url).connect();
       this.socket.on('disconnect', () => {
         this.setErrorMessage("Disconnected with server!");
       });
@@ -146,8 +154,8 @@ export class GamesPlayComponent implements OnInit {
       return { 
           'left': (position.x)  + 'px', 
           'top': (position.y ) +'px', 
-          'background-position-x': '0px',
-          'background-position-y': position.offset + 'px', 
+          'background-position-x': position.offsetX + 'px',
+          'background-position-y': position.offsetY + 'px', 
           'z-index': tile.yPos+ (tile.zPos * 2) 
       };
     }
@@ -156,8 +164,8 @@ export class GamesPlayComponent implements OnInit {
     {
       let offset = this.tileLayoutManager.getTileOffset(tile);
       return {
-          'background-position-x': '0px',
-          'background-position-y': offset+ 'px'
+          'background-position-x': offset[0]+ 'px',
+          'background-position-y': offset[1]+ 'px'
       };
     }
 
@@ -219,6 +227,13 @@ export class GamesPlayComponent implements OnInit {
             return ;
          }
       };     
+    }
+
+    public changeTheme (theme: string) 
+    { 
+      this.storage.setValue("userTheme", theme);
+      this.layoutManagerType = theme;
+      this.tileLayoutManager = TileModelFactory.create(theme);
     }
 
     private setErrorMessage (message: string)

@@ -24,7 +24,7 @@ export class GamesOverviewPlayingComponent  {
 
   getPlayingGames () :void 
   {
-    this.gameService.getPlayingGames(this.currentPlayer.id)
+    this.gameService.getPlayingGames()
                      .subscribe(
                        games => this.games = games,
                        error =>  this.errorMessage = <any>error, 
@@ -33,6 +33,6 @@ export class GamesOverviewPlayingComponent  {
 
   playGame (gameToPlay: Game)
   {
-    this.router.navigate(['/games/'+ gameToPlay.id + '/play'])
+    this.router.navigate(['/games/'+ gameToPlay.id + '/play']);
   }
 }

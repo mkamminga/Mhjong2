@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Inject, Injectable } from '@angular/core';
+import { Config, APP_CONFIG }  from '../Config';
+import { UserService }            from '../services/UserService';
+
 
 @Component({
   selector: 'app',
@@ -13,7 +16,7 @@ import { Component } from '@angular/core';
 
         <div class="top-bar-right">
           <ul class="menu left">
-            <li><a routerLink="http://mahjongmayhem.herokuapp.com/auth/avans?callbackUrl=http://localhost:3000/login">Login</a></li>
+            <li><a *ngIf="!isLoggedIn()" routerLink="{{ loginLink }}">Login</a></li>
           </ul>
         </div>
     </div>
@@ -27,4 +30,17 @@ import { Component } from '@angular/core';
       <router-outlet></router-outlet>
     </div>`,
 })
-export class DashBoardComponent  { }
+@Injectable()
+export class DashBoardComponent  
+{
+  private loginLink:string = "";
+  constructor (@Inject(APP_CONFIG) private config: Config, protected userService: UserService)
+  {
+    this.loginLink = config.baseUrl + "/auth/avans?callbackUrl=http://localhost:3000/login";
+  }
+
+  protected isLoggedIn(): boolean
+  {
+    return this.userService.isLoggedIn();
+  }
+}

@@ -22,6 +22,7 @@ import {Tab } from './components/tabs/app.tab.component';
 
 import {PageNotFoundComponent } from './components/app.404.component';
 
+
 //pipes
 import { TileMatchPipe } from './Pipes/TileMatch.pipe';
 import { GameContainingPlayerPipe } from './Pipes/GameContainingPlayer.pipe';
@@ -42,11 +43,12 @@ import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './Models/TileLayout
 
 //misc, configurations
 import { Config, APP_CONFIG }  from './Config';
-import { factories }  from './Configurations/TileLayoutFactories';
+
+let Service = new LocalStorageService();
 
 const configurationObject:Config = {
   baseUrl: "http://mahjongmayhem.herokuapp.com",
-  tileManager: "vertical"
+  tileManager: Service.getValue("userTheme") // "hybrid"
 };
 
 export const appRoutes: Routes = [
@@ -80,21 +82,6 @@ class MainHttpServiceFactory {
   }
 }
 
-@Injectable()
-class TileModelFactory {
-  public static create (@Inject(APP_CONFIG) config: Config): TileLayoutManager {
-    for (let tileFactory of factories)
-    {
-      if (tileFactory.key == config.tileManager)
-      {
-        return tileFactory.factory();
-      }
-    }
-
-    return null;
-  }
-}
-
 @NgModule({
   imports:      [ BrowserModule, RouterModule.forRoot(appRoutes), HttpModule, ReactiveFormsModule ],
   declarations: [
@@ -115,7 +102,7 @@ class TileModelFactory {
     GamesOverviewClosedComponent,
     { 
       provide: APP_STORAGE, 
-      useClass: LocalStorageService
+      useValue: Service//LocalStorageService
     },
     { 
       provide: APP_CONFIG, 
@@ -129,11 +116,6 @@ class TileModelFactory {
       provide: MainHttpService, 
       useFactory:MainHttpServiceFactory.create, 
       deps: [Http, UserService, APP_CONFIG]
-    },
-    {
-      provide: TileLayoutManager, 
-      useFactory:TileModelFactory.create, 
-      deps: [APP_CONFIG]
     }
     
   ], 

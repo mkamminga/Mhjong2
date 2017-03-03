@@ -2,9 +2,12 @@
 
 <div *ngIf="game == null">Loading details...</div>
 <h2>Game play</h2>
+<div>
+    Theme: <button class="button small primary" type="button" (click)="changeTheme('vertical')">Vertical</button> | <button class="button small primary" type="button" (click)="changeTheme('hybrid')">Hybrid</button>
+</div>
 <tabs>
     <tab tabTitle="Game board">
-        <div id="board">
+        <div id="board" class="{{ layoutManagerType }}">
             <div class="callout alert" [hidden]="errorMessage == ''" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">{{ errorMessage }}</div>
             <div class="callout primary" [hidden]="!matching" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">Matching</div>
             <div *ngFor="let tile of (inGameTiles | tileMatch)" class="tile" [ngClass]="{'selected': tile == selectedTile || tile == selectedTIleToMatch }" (click)="matchTile(tile)" [ngStyle]="calcTilePosition(tile)"></div>
@@ -18,7 +21,7 @@
     </tab>
 
     <tab tabTitle="Played tiles">
-        <div id="players-board">
+        <div id="players-board" class="{{ layoutManagerType }}">
             <div *ngIf="game != null">
                 <div *ngFor="let player of game.players">
                     <div><strong>{{ player.name }}</strong></div>

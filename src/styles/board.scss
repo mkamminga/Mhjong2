@@ -1,13 +1,18 @@
+.vertical {
+    .tile {         
+        width: 35px;
+        height: 48px;
+        background-image: url('../images/sprite1.png');
+    }
+}
 
-$percentage: 1;
-$board-tile-width: 68 * $percentage;
-$board-total-height: 3251 * $percentage;
-$board-tile-height: $board-total-height / 42;
-
-.tile {         
-    width: 35px;
-    height: 48px;
-    background-image: url('../images/sprite1.png');
+.hybrid {
+    .tile {
+        width: 38.87px;
+        height: 48px;
+        background-image: url('../images/sprite_horizontal.png');
+        background-size: 544.18px 144px;
+    }
 }
 
 #board 
