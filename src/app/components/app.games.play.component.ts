@@ -140,17 +140,13 @@ export class GamesPlayComponent implements OnInit {
         console.log("Match found!");
         for (let item of matches){
 
-          if (this.selectedTile && item._id == this.selectedTile._id)
+          if (this.selectedTile != null && item._id == this.selectedTile._id)
           {
             this.selectedTile = null;
           }
-          else if (this.selectedTIleToMatch && item._id == this.selectedTIleToMatch._id)
+          else if (this.selectedTIleToMatch != null && item._id == this.selectedTIleToMatch._id)
           {
             this.selectedTIleToMatch = null;
-          }
-          else
-          {
-            break;
           }
 
           this.setTileMatchedBy(item);
