@@ -36,8 +36,8 @@ export const chosenTileLayout: TileLayout = {
         "9" : [26]
     },
     'Dragon' : {
-        'Red' :     [27],
-        'Green' :   [28],
+        'Red' :     [28],
+        'Green' :   [27],
         'White' :   [29],
     },
     'Flower' : {
@@ -53,9 +53,9 @@ export const chosenTileLayout: TileLayout = {
         'Winter' : [37]
     },
     'Wind' : {
-        'South' :   [38],
-        'East' :    [39],
-        'West' :    [40],
-        'North' :   [41]
+        'South' :   [40],
+        'East' :    [38],
+        'West' :    [41],
+        'North' :   [39]
     }
 };

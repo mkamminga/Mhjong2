@@ -45,11 +45,16 @@ import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './Models/TileLayout
 import { Config, APP_CONFIG }  from './Config';
 
 let Service = new LocalStorageService();
-
+if (Service.getValue("userTheme") != "")
+{
+  Service.setValue("userTheme", "vertical");
+}
 const configurationObject:Config = {
   baseUrl: "http://mahjongmayhem.herokuapp.com",
-  tileManager: Service.getValue("userTheme") // "hybrid"
+  tileManager:  Service.getValue("userTheme")
 };
+
+console.log(configurationObject);
 
 export const appRoutes: Routes = [
   { 

@@ -2,9 +2,19 @@
 
 <div *ngIf="game == null">Loading details...</div>
 <h2>Game play</h2>
-<div>
-    Theme: <button class="button small primary" type="button" (click)="changeTheme('vertical')">Vertical</button> | <button class="button small primary" type="button" (click)="changeTheme('hybrid')">Hybrid</button>
+
+<div class="clearfix">
+    <div class="float-left">
+        Theme: <button class="button small primary" type="button" (click)="changeTheme('vertical')">Vertical</button> | <button class="button small primary" type="button" (click)="changeTheme('hybrid')">Hybrid</button>
+    </div>
+
+    <div class="float-right">
+        <div class="callout warning" [hidden]="game == null || game.state != 'open'">Waiting for other players</div>
+        <div class="callout success" [hidden]="game == null || game.state != 'playing'">Active</div>
+        <div class="callout primary" [hidden]="game == null || game.state != 'finished'">Game is finished!</div>
+    </div>
 </div>
+
 <tabs>
     <tab tabTitle="Game board">
         <div id="board" class="{{ layoutManagerType }}">

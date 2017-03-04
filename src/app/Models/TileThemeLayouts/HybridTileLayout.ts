@@ -6,7 +6,7 @@ export class HybridLayoutManager extends TileLayoutManager {
     {
         super(tileConfig, tileHeight, tileWidth);
 
-        this.muliplier = tileHeight * 0.38;
+        this.muliplier = tileHeight * 0.35;
         this.heightMuliplier= this.muliplier +  (this.muliplier * 0.35);
     }
 
@@ -21,11 +21,11 @@ export class HybridLayoutManager extends TileLayoutManager {
 
         let offset = this.getTileOffset(tile);
 
-        position.x          =   (tile.xPos / 2 * this.tileWidth * 0.95)  - (tile.zPos * 5); 
-        position.y          =   (tile.yPos / 2 * this.tileHeight * 0.95)  - (tile.zPos * 4);
-        position.offsetY     =    offset[1]; 
+        position.x          =   (tile.xPos / 2 * this.tileWidth)  - (tile.zPos * 4); 
+        position.y          =   (tile.yPos / 2 * this.tileHeight)  - (tile.zPos * 4);
+        position.offsetY     =  offset[1]; 
         position.offsetX      = offset[0];
-        console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offsetX + " from " + offset);
+        //console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offsetX + " from " + offset);
 
         return position;
     }
@@ -47,7 +47,9 @@ export class HybridLayoutManager extends TileLayoutManager {
             console.log("VerticalLayoutManager > calcTilePosition: Unknown tile suite or name for: "+ tile.tile.suit + " => "+ tile.tile.name)
         }
 
-        return [offset[1] * this.tileWidth, -(offset[0] * this.tileHeight)];
+        //console.log(offset);
+
+        return [-(offset[1] * this.tileWidth), -(offset[0] * this.tileHeight)];
     }
 
 }

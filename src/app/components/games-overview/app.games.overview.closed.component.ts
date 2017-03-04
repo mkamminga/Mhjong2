@@ -26,7 +26,7 @@ export class GamesOverviewClosedComponent {
   {
     this.gameService.getClosedGames()
                      .subscribe(
-                       games => this.games = games,
+                       games => this.games = games.splice(0, 20),
                        error =>  this.errorMessage = <any>error, 
                        () => console.log("GamesComponent > getOpenGames > subscribe complete callback: Games loaded"));
   }

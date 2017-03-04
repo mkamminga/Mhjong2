@@ -16,7 +16,7 @@ import { UserService }            from '../services/UserService';
 
         <div class="top-bar-right">
           <ul class="menu left">
-            <li><a *ngIf="!isLoggedIn()" routerLink="{{ loginLink }}">Login</a></li>
+            <li><a *ngIf="!isLoggedIn()" href="{{ loginLink }}">Login</a></li>
           </ul>
         </div>
     </div>

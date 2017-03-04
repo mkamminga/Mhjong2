@@ -27,20 +27,21 @@ import { TileModelFactory }  from '../Configurations/TileLayoutFactories';
 })
 @Injectable()
 export class GamesPlayComponent implements OnInit {
-    private subScription: Subscription;
-    game: Game = null;
-    inGameTiles: Tile[];
-    matching:boolean = false;
+    private game: Game = null;
+    private inGameTiles: Tile[];
+    private matching:boolean = false;
 
-    selectedTile: Tile = null;
-    selectedTIleToMatch: Tile = null;
+    private selectedTile: Tile = null;
+    private selectedTIleToMatch: Tile = null;
 
-    errorMessage:string = "";
-    spectator: boolean = true;
+    private errorMessage:string = "";
+    private spectator: boolean = true;
 
     private socket:SocketIOClient.Socket = null;
-    layoutManagerType:string = "";
+    private layoutManagerType:string = "";
     private tileLayoutManager : TileLayoutManager;
+
+    private subscriptions:Subscription[] = [];
 
     constructor(
       @Inject(APP_CONFIG) private config: Config,
@@ -54,30 +55,44 @@ export class GamesPlayComponent implements OnInit {
       private userService: UserService) 
     {
       this.layoutManagerType = config.tileManager;
+      console.log(config.tileManager);
       this.tileLayoutManager = TileModelFactory.create(config.tileManager);
     }
 
     ngOnInit() 
     {
         // subscribe to router event
-        this.subScription = this.activatedRoute.params.subscribe((params: Params) => {
+        let subScription = this.activatedRoute.params.subscribe((params: Params) => {
           //console.log(params);
             if (params.hasOwnProperty('id'))
             {
-                this.getGamePlayDetails(params['id']);
-                this.getGamesTiles(params['id']);
-                this.setUpSocket(this.config.baseUrl + ':80?gameId='+ params['id']);
+                this.start(params['id']);
+
+                setTimeout(() => {
+                  this.setErrorMessage("Resetting connection!");
+                  this.clear();
+                  this.start(params['id']);
+                }, 30000);
             }
             else
             {
               console.log("GamesPlayComponent > ngOnInit: error, data missing!");
             }
         });
+
+        this.subscriptions.push(subScription);
+    }
+
+    private start (gameId:string)
+    {
+        this.getGamePlayDetails(gameId);
+        this.getGamesTiles(gameId);
+        this.setUpSocket(this.config.baseUrl + ':80?gameId='+ gameId);
     }
 
     private getGamePlayDetails (gameId: string)
     {
-      this.gameService.getGame(gameId) // fetch game
+      let subScription = this.gameService.getGame(gameId) // fetch game
                   .subscribe(
                     game => {
                       this.game = game;
@@ -92,24 +107,29 @@ export class GamesPlayComponent implements OnInit {
                     error =>  console.log(error), 
                     () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: game fetched")
                   );
-
+      this.subscriptions.push(subScription);
     }
 
     private getGamesTiles (gameId: string)
     {
-      
-      this.gameTileService.getInGameTiles(gameId) // fetch in game tiles
+      let subScription =this.gameTileService.getInGameTiles(gameId) // fetch in game tiles
             .subscribe(
               inGameTiles => this.inGameTiles  = inGameTiles,
               error =>  console.log(error), 
               () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: ingame tiles fetched")
             );
+      this.subscriptions.push(subScription);
     }
 
     private setUpSocket (url: string) {
       this.socket = io(url).connect();
+      this.socket.on('connect', () => {
+        console.log("Socket openend");
+      });
       this.socket.on('disconnect', () => {
-        this.setErrorMessage("Disconnected with server!");
+        this.setErrorMessage("Disconnected with server! Reestablling connection!");
+        this.clear();
+        this.start(this.game.id);
       });
 
       this.socket.on('start', (object: any) => {
@@ -117,7 +137,7 @@ export class GamesPlayComponent implements OnInit {
       });
 
       this.socket.on('match', (matches: Tile[]) => {
-
+        console.log("Match found!");
         for (let item of matches){
 
           if (this.selectedTile && item._id == this.selectedTile._id)
@@ -145,6 +165,7 @@ export class GamesPlayComponent implements OnInit {
       this.socket.on('end', () => {
         console.log("Game has endend");
         this.setErrorMessage("Game has ended! No more matches posible!");
+        this.game.state = "finished";
       });
     }
 
@@ -197,10 +218,10 @@ export class GamesPlayComponent implements OnInit {
         else
         {
           this.matching = true;
-          this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
+          let subscribtion = this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
               .subscribe(
                 response => {
-                  console.log("Success");
+                  console.log("Tile matched!");
                 },
                 error =>  {
                   console.log(error);
@@ -212,8 +233,9 @@ export class GamesPlayComponent implements OnInit {
                 () => {
                   console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched");
                   this.matching = false;
+                  subscribtion.unsubscribe();
                 }
-              );
+            );
         }
       }
     }
@@ -247,7 +269,18 @@ export class GamesPlayComponent implements OnInit {
 
     ngOnDestroy() 
     {
-        this.subScription.unsubscribe();
-        this.socket.close();
+      this.clear();
+    }
+
+    private clear ()
+    {
+      for (let subscribtion of this.subscriptions)
+      {
+        subscribtion.unsubscribe();
+      }
+      this.socket.close();
+
+      this.selectedTile = null;
+      this.selectedTIleToMatch = null;
     }
 }

@@ -26,7 +26,7 @@ export class GamesOverviewPlayingComponent  {
   {
     this.gameService.getPlayingGames()
                      .subscribe(
-                       games => this.games = games,
+                       games => this.games = games.splice(0, 20),
                        error =>  this.errorMessage = <any>error, 
                        () => console.log("GamesComponent > getPlayingGames > subscribe complete callback: Games loaded"));
   }

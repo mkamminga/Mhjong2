@@ -2,17 +2,6 @@ import {TileLayout} from '../Models/TileLayout'
 
 export const hybridTileLayout: TileLayout = {
     "Bamboo" : {
-        "1" : [0, 0],
-        "2" : [0, 1],
-        "3" : [0, 2],
-        "4" : [0, 3],
-        "5" : [0, 4],
-        "6" : [0, 5],
-        "7" : [0, 6],
-        "8" : [0, 7],
-        "9" : [0, 8]
-    },
-    "Character" : {
         "1" : [1, 0],
         "2" : [1, 1],
         "3" : [1, 2],
@@ -22,6 +11,17 @@ export const hybridTileLayout: TileLayout = {
         "7" : [1, 6],
         "8" : [1, 7],
         "9" : [1, 8]
+    },
+    "Character" : {
+        "1" : [0, 0],
+        "2" : [0, 1],
+        "3" : [0, 2],
+        "4" : [0, 3],
+        "5" : [0, 4],
+        "6" : [0, 5],
+        "7" : [0, 6],
+        "8" : [0, 7],
+        "9" : [0, 8]
     },
     //"Dot" : 2,
     "Circle":  {
