@@ -45,7 +45,7 @@ import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './Models/TileLayout
 import { Config, APP_CONFIG }  from './Config';
 
 let Service = new LocalStorageService();
-if (Service.getValue("userTheme") != "")
+if (Service.getValue("userTheme") == "")
 {
   Service.setValue("userTheme", "vertical");
 }

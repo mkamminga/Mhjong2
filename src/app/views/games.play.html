@@ -9,7 +9,6 @@
     </div>
 
     <div class="float-right">
-        <div class="callout warning" [hidden]="game == null || game.state != 'open'">Waiting for other players</div>
         <div class="callout success" [hidden]="game == null || game.state != 'playing'">Active</div>
         <div class="callout primary" [hidden]="game == null || game.state != 'finished'">Game is finished!</div>
     </div>
@@ -17,6 +16,7 @@
 
 <tabs>
     <tab tabTitle="Game board">
+        <div class="callout warning" [hidden]="game == null || game.state != 'open'">Waiting for other players</div>
         <div id="board" class="{{ layoutManagerType }}">
             <div class="callout alert" [hidden]="errorMessage == ''" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">{{ errorMessage }}</div>
             <div class="callout primary" [hidden]="!matching" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">Matching</div>

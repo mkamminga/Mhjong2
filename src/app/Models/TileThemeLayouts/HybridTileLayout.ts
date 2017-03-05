@@ -16,15 +16,17 @@ export class HybridLayoutManager extends TileLayoutManager {
             x       : 0,
             y       : 0,
             offsetX  : 0,
-            offsetY: 0
+            offsetY: 0,
+            layer: 0
         };
 
         let offset = this.getTileOffset(tile);
 
-        position.x          =   (tile.xPos / 2 * this.tileWidth)  - (tile.zPos * 4); 
-        position.y          =   (tile.yPos / 2 * this.tileHeight)  - (tile.zPos * 4);
-        position.offsetY     =  offset[1]; 
-        position.offsetX      = offset[0];
+        position.x              =   (tile.xPos / 2 * this.tileWidth * 0.96)  - (tile.zPos * 4); 
+        position.y              =   (tile.yPos / 2 * this.tileHeight * 0.96)  - (tile.zPos * 3);
+        position.offsetY        =   offset[1]; 
+        position.offsetX        =   offset[0];
+        position.layer          =   (tile.zPos * 3); 
         //console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offsetX + " from " + offset);
 
         return position;

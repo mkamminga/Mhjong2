@@ -96,13 +96,7 @@ export class GamesPlayComponent implements OnInit {
                   .subscribe(
                     game => {
                       this.game = game;
-
-                      if (game.state == "playing" && (game.players.findIndex((player: Player) => {
-                          return player.id == this.userService.getUserName()
-                      }) >= 0))
-                      {
-                        this.spectator = false;
-                      }
+                      this.spectator = this.isPlayerSpectator(game, this.userService.getUserName());
                     },
                     error =>  console.log(error), 
                     () => console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: game fetched")
@@ -126,18 +120,22 @@ export class GamesPlayComponent implements OnInit {
       this.socket.on('connect', () => {
         console.log("Socket openend");
       });
+
       this.socket.on('disconnect', () => {
         this.setErrorMessage("Disconnected with server! Reestablling connection!");
         this.clear();
         this.start(this.game.id);
       });
 
-      this.socket.on('start', (object: any) => {
+      this.socket.on('start', () => {
         console.log("STart -> ");
+        this.setErrorMessage("Starting game!");
+        this.spectator = this.isPlayerSpectator(this.game, this.userService.getUserName());
       });
 
       this.socket.on('match', (matches: Tile[]) => {
         console.log("Match found!");
+        
         for (let item of matches){
 
           if (this.selectedTile != null && item._id == this.selectedTile._id)
@@ -151,11 +149,25 @@ export class GamesPlayComponent implements OnInit {
 
           this.setTileMatchedBy(item);
         }
+      });
 
-        if (this.selectedTile != null || this.selectedTIleToMatch != null)
+      this.socket.on("start", () => {
+        this.game.state = "playing";
+        this.setErrorMessage("Game has started!");
+        this.getGamesTiles(this.game.id);
+      });
+
+      this.socket.on('playerJoined', (player:Player) => {
+
+        if (player.name == undefined || player.name == "")
         {
-          console.log("Some error must have occured!");
+          player.name = "John Doe";
         }
+
+        let newPlayer = new Player(player._id, player._id, player.name);
+
+        this.setErrorMessage("'"+ newPlayer.name +"' has joined the game!");
+        this.game.players.push(newPlayer);
       });
 
       this.socket.on('end', () => {
@@ -173,7 +185,7 @@ export class GamesPlayComponent implements OnInit {
           'top': (position.y ) +'px', 
           'background-position-x': position.offsetX + 'px',
           'background-position-y': position.offsetY + 'px', 
-          'z-index': tile.yPos+ (tile.zPos * 2) 
+          'z-index': position.layer
       };
     }
 
@@ -188,7 +200,7 @@ export class GamesPlayComponent implements OnInit {
 
     public matchTile (tile: Tile): void
     {
-      if (this.selectedTile && this.selectedTIleToMatch || this.spectator)
+      if (this.game.state != "playing" || (this.selectedTile && this.selectedTIleToMatch) || this.spectator)
       {
         //waiting for answer, be paitient, or just a spectator
         return;
@@ -236,6 +248,14 @@ export class GamesPlayComponent implements OnInit {
       }
     }
 
+    private isPlayerSpectator (game: Game, playerId: string) 
+    {
+        return (game.state == "playing" && (game.players.findIndex((player: Player) => {
+            return player.id == playerId;
+        }) >= 0));
+    }
+
+
     private setTileMatchedBy (itemThatHasMatch: Tile): void
     {
       for (var i = 0; i< this.inGameTiles.length; i++ ){
@@ -266,15 +286,18 @@ export class GamesPlayComponent implements OnInit {
     ngOnDestroy() 
     {
       this.clear();
+     
     }
 
     private clear ()
     {
+      this.socket.close();
+      this.socket.removeAllListeners();
+
       for (let subscribtion of this.subscriptions)
       {
         subscribtion.unsubscribe();
       }
-      this.socket.close();
 
       this.selectedTile = null;
       this.selectedTIleToMatch = null;

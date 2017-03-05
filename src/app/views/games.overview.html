@@ -24,7 +24,8 @@ Please login to view any games!
 
                 <div>
                     <button type="button" class="small button success" *ngIf="game.canStart(gameOverview.currentPlayer)" (click)="gameOverview.startGame(game)">Start</button>
-                    <button type="button" class="small button warning" *ngIf="game.canJoin(gameOverview.currentPlayer)" (click)="gameOverview.joinGame(game)">Join game</button> 
+                    <button type="button" class="small button warning" *ngIf="game.canJoin(gameOverview.currentPlayer)" (click)="gameOverview.joinGame(game)">Join game</button>
+                    <button type="button" class="small button warning" (click)="gamePlaying.playGame(game)">View game</button>
                 </div>
             </div>
         </tab>

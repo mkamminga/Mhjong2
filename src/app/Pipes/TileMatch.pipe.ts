@@ -18,6 +18,7 @@ export class TileMatchPipe implements PipeTransform {
 
       if (ofPlayer)
       {
+        //console.log("Match: "+ ofPlayer + " == "+ ( tile.match != null ? tile.match.foundBy : "None"));
         return tile.match != null && ofPlayer == tile.match.foundBy;
       }
       else

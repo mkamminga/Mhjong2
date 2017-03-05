@@ -16,14 +16,16 @@ export class VerticalLayoutManager extends TileLayoutManager {
             x       : 0,
             y       : 0,
             offsetX  : 0,
-            offsetY: 0
+            offsetY: 0,
+            layer: 0
         };
 
         let offset = this.getTileOffset(tile);
 
         position.x          =   (tile.xPos / 2 * this.tileWidth * 0.95)  + (tile.zPos * 5); 
         position.y          =   (tile.yPos / 2 * this.tileHeight * 0.95)  - (tile.zPos * 4);
-        position.offsetY     =    offset[1]; 
+        position.offsetY    =   offset[1]; 
+        position.layer      =   tile.yPos+ (tile.zPos * 3); 
 
         //console.log("TIle: "+ tile.tile.suit + " => "+ tile.tile.name + ", offset= "+ position.offset + " from " + offset);
 

@@ -62,6 +62,7 @@ export interface TilePosition {
     y:number;
     offsetX: number;
     offsetY: number;
+    layer: number;
 }
      
 @Injectable()
