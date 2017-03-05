@@ -203,6 +203,7 @@ export class GamesPlayComponent implements OnInit {
       if (this.game.state != "playing" || (this.selectedTile && this.selectedTIleToMatch) || this.spectator)
       {
         //waiting for answer, be paitient, or just a spectator
+        console.log("Not right now!:  "+ this.spectator);
         return;
       }
       if (this.selectedTile == null)
@@ -250,7 +251,7 @@ export class GamesPlayComponent implements OnInit {
 
     private isPlayerSpectator (game: Game, playerId: string) 
     {
-        return (game.state == "playing" && (game.players.findIndex((player: Player) => {
+        return !(game.state == "playing" && (game.players.findIndex((player: Player) => {
             return player.id == playerId;
         }) >= 0));
     }
