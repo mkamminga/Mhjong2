@@ -15,19 +15,20 @@ import { GameTemplate }                       from '../Models/GameTemplate';
 })
 
 export class GamesNewComponent implements OnInit {
-  mode = 'Observable'; 
-  errorMessage: string; // post, get or put callback errors
-  gameTemplates: GameTemplate[];
-  model = new BasicGame(null, null, null);
-  result = {};
-  newGameForm: FormGroup;
+  private mode = 'Observable'; 
+  private errorMessage: string; // post, get or put callback errors
+  private gameTemplates: GameTemplate[];
+  private model = new BasicGame(null, null, null);
+  private result = {};
+  private newGameForm: FormGroup;
 
-  formErrors = {
+  private formErrors = {
     'minPlayers' : '',
     'maxPlayers' : '',
     'templateName': ''
   };
-  validationMessages = {
+
+  private validationMessages = {
     'minPlayers': {
       'required'  :      'Minplayer is required.',
       'undefined' :      'Value is not valid.'
@@ -49,7 +50,7 @@ export class GamesNewComponent implements OnInit {
     this.buildForm();
   }
 
-  getGameTemplates (): void
+  private getGameTemplates (): void
   {
     this.gameTemplateService.getGameTemplates()
                      .subscribe(
@@ -58,7 +59,7 @@ export class GamesNewComponent implements OnInit {
                        () => console.log("GamesNewComponent > getGameTemplates > subscribe complete callback: Games templates loaded"));
   }
 
-  addGame ():void 
+  private addGame ():void 
   {
     if (!this.newGameForm.invalid) // form is valid, post
     {
@@ -77,11 +78,12 @@ export class GamesNewComponent implements OnInit {
     }
     else
     {
+      this.errorMessage = "Fill in all values correctly!";
       console.log("GamesNewComponent > postNewGame: invalid form");
     }
   }
 
-  buildForm(): void {
+  private buildForm(): void {
     const pattern = Validators.pattern("[0-9]+");
     this.newGameForm = this.fb.group({
       'minPlayers': [this.model.minPlayers, [
@@ -102,7 +104,7 @@ export class GamesNewComponent implements OnInit {
     this.onValueChanged(); // (re)set validation messages now
   }
 
-  onValueChanged(data?: any): void {
+  public onValueChanged(data?: any): void {
     if (!this.newGameForm) { return; }
     const form = this.newGameForm;
     

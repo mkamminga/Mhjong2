@@ -14,7 +14,7 @@ import {TestingModule} from './testing/TestingModule';
 
 
 
-describe('GsameNew (templateUrl)', () => {
+describe('Games New Component', () => {
 
   let comp:    GamesNewComponent;
   let fixture: ComponentFixture<GamesNewComponent>;
@@ -39,10 +39,22 @@ describe('GsameNew (templateUrl)', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GamesNewComponent);
 
-    comp = fixture.componentInstance; // BannerComponent test instance
+    comp = fixture.componentInstance; // GamesNewComponent test instance
+    fixture.detectChanges();
   });
 
-  it('`detectChanges`', () => {
-    expect(true).toBe(true);
+  it('should display no errormessage', () => {
+    de = fixture.debugElement.query(By.css('#errorMessage'));
+    el = de.nativeElement;
+    expect(de.nativeElement.innerHTML).toBe('');
+  });
+
+  it('should display errormessage', () => {
+    let button = fixture.debugElement.query(By.css('button'));
+    button.triggerEventHandler("click", null);
+    fixture.detectChanges();
+    de = fixture.debugElement.query(By.css('#errorMessage'));
+    el = de.nativeElement;
+    expect(de.nativeElement.innerHTML).toBe("Fill in all values correctly!");
   });
 });
