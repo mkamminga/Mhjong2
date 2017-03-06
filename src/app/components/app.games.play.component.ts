@@ -55,7 +55,7 @@ export class GamesPlayComponent implements OnInit {
       private userService: UserService) 
     {
       this.layoutManagerType = config.tileManager;
-      console.log(config.tileManager);
+      //console.log(config.tileManager);
       this.tileLayoutManager = TileModelFactory.create(config.tileManager);
     }
 
@@ -67,12 +67,6 @@ export class GamesPlayComponent implements OnInit {
             if (params.hasOwnProperty('id'))
             {
                 this.start(params['id']);
-
-                setTimeout(() => {
-                  this.setErrorMessage("Resetting connection!");
-                  this.clear();
-                  this.start(params['id']);
-                }, 30000);
             }
             else
             {
@@ -127,10 +121,11 @@ export class GamesPlayComponent implements OnInit {
         this.start(this.game.id);
       });
 
-      this.socket.on('start', () => {
-        console.log("STart -> ");
-        this.setErrorMessage("Starting game!");
+      this.socket.on("start", () => {
+        this.game.state = "playing";
+        this.setErrorMessage("Game has started!");
         this.spectator = this.isPlayerSpectator(this.game, this.userService.getUserName());
+        this.getGamesTiles(this.game.id);
       });
 
       this.socket.on('match', (matches: Tile[]) => {
@@ -149,12 +144,6 @@ export class GamesPlayComponent implements OnInit {
 
           this.setTileMatchedBy(item);
         }
-      });
-
-      this.socket.on("start", () => {
-        this.game.state = "playing";
-        this.setErrorMessage("Game has started!");
-        this.getGamesTiles(this.game.id);
       });
 
       this.socket.on('playerJoined', (player:Player) => {
@@ -203,7 +192,6 @@ export class GamesPlayComponent implements OnInit {
       if (this.game.state != "playing" || (this.selectedTile && this.selectedTIleToMatch) || this.spectator)
       {
         //waiting for answer, be paitient, or just a spectator
-        console.log("Not right now!:  "+ this.spectator);
         return;
       }
       if (this.selectedTile == null)
@@ -281,7 +269,7 @@ export class GamesPlayComponent implements OnInit {
 
       setTimeout(() => {
         this.errorMessage = "";
-      }, 3500);
+      }, 3000);
     }
 
     ngOnDestroy() 

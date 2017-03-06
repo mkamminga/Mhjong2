@@ -14,7 +14,7 @@ export class Game extends BasicGame {
     minPlayers: number,
     public state:string) 
     {
-        super(maxPlayers, minPlayers, gameTemplate.id);
+        super(maxPlayers, minPlayers, gameTemplate ? gameTemplate.id : null);
     }
 
     public avaiablePlaces () : number 
