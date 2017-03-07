@@ -9,9 +9,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 //components
 import { DashBoardComponent }  from './components/app.dashboard.component';
 import { LoginComponent }  from './components/app.login.component';
-import {GamesComponent } from './components/app.games.component';
-import {GamesOverviewOpenComponent } from './components/games-overview/app.games.overview.open.component';
-import {GamesOverviewPlayingComponent } from './components/games-overview/app.games.overview.playing.component';
+import { GamesComponent } from './components/app.games.component';
+import { GamesOverviewOpenComponent } from './components/games-overview/app.games.overview.open.component';
+import { GamesOverviewPlayingComponent } from './components/games-overview/app.games.overview.playing.component';
 import { GamesOverviewClosedComponent } from './components/games-overview/app.games.overview.closed.component';
 
 import {GamesNewComponent } from './components/app.games.new.component';
@@ -53,8 +53,6 @@ const configurationObject:Config = {
   baseUrl: "http://mahjongmayhem.herokuapp.com",
   tileManager:  Service.getValue("userTheme")
 };
-
-console.log(configurationObject);
 
 export const appRoutes: Routes = [
   { 

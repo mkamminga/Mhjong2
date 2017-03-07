@@ -1,5 +1,5 @@
 <h2>New Game</h2>
-
+<div class="callout warning" [hidden]="errorMessage == ''" id="errorMessage">{{ errorMessage }}</div>
 
 
 <form [formGroup]="newGameForm" (submit)="return">
@@ -45,5 +45,5 @@
     </div>
   </div>
 
-  <button type="button" *ngIf="!newGameForm.invalid" class="button medium primary" (click)="addGame()">New Game</button>
+  <button type="button" [hidden]="newGameForm.invalid" class="button medium primary" (click)="addGame()">New Game</button>
 </form>

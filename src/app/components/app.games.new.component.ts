@@ -27,6 +27,7 @@ export class GamesNewComponent implements OnInit {
     'maxPlayers' : '',
     'templateName': ''
   };
+  
   private validationMessages = {
     'minPlayers': {
       'required'  :      'Minplayer is required.',
@@ -49,7 +50,7 @@ export class GamesNewComponent implements OnInit {
     this.buildForm();
   }
 
-  getGameTemplates (): void
+  private getGameTemplates (): void
   {
     this.gameTemplateService.getGameTemplates()
                      .subscribe(
@@ -58,7 +59,7 @@ export class GamesNewComponent implements OnInit {
                        () => console.log("GamesNewComponent > getGameTemplates > subscribe complete callback: Games templates loaded"));
   }
 
-  addGame ():void 
+  private addGame ():void 
   {
     if (!this.newGameForm.invalid) // form is valid, post
     {
@@ -82,7 +83,7 @@ export class GamesNewComponent implements OnInit {
     }
   }
 
-  buildForm(): void {
+  private buildForm(): void {
     const pattern = Validators.pattern("[0-9]+");
     this.newGameForm = this.fb.group({
       'minPlayers': [this.model.minPlayers, [
@@ -103,7 +104,7 @@ export class GamesNewComponent implements OnInit {
     this.onValueChanged(); // (re)set validation messages now
   }
 
-  onValueChanged(data?: any): void {
+  public onValueChanged(data?: any): void {
     if (!this.newGameForm) { return; }
     const form = this.newGameForm;
     
