@@ -13,7 +13,7 @@ import { GameService }                              from '../../services/GameSer
 import { GameTemplateService }                      from '../../services/GameTemplateService';
 import { TileService }                              from '../../services/TileService';
 
-import { GamesNewComponent }                        from '../app.games.new.component';
+
 
 import { Config, APP_CONFIG }                       from '../../Config';
 
@@ -32,7 +32,7 @@ const configurationObject:Config = {
 
 @NgModule({
     declarations: [ 
-         
+        
     ], 
     providers: [
         GameService, 

@@ -20,14 +20,14 @@ export class GamesNewComponent implements OnInit {
   private gameTemplates: GameTemplate[];
   private model = new BasicGame(null, null, null);
   private result = {};
-  private newGameForm: FormGroup;
+  newGameForm: FormGroup;
 
-  private formErrors = {
+  formErrors = {
     'minPlayers' : '',
     'maxPlayers' : '',
     'templateName': ''
   };
-  
+
   private validationMessages = {
     'minPlayers': {
       'required'  :      'Minplayer is required.',
@@ -61,6 +61,7 @@ export class GamesNewComponent implements OnInit {
 
   private addGame ():void 
   {
+    this.onValueChanged();
     if (!this.newGameForm.invalid) // form is valid, post
     {
       console.log("GamesNewComponent > postNewGame: post");
@@ -78,7 +79,8 @@ export class GamesNewComponent implements OnInit {
     }
     else
     {
-      this.errorMessage = "Fill in the form correctly! ";
+      this.errorMessage = "Fill in all values correctly!";
+      
       console.log("GamesNewComponent > postNewGame: invalid form");
     }
   }

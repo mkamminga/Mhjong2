@@ -22,20 +22,15 @@ export class GamesComponent implements OnInit {
 
   constructor(
     protected userService: UserService, 
-    private gameOverview: GamesOverviewOpenComponent, 
-    private gamePlaying: GamesOverviewPlayingComponent, 
+    public gameOverview: GamesOverviewOpenComponent, 
+    public gamePlaying: GamesOverviewPlayingComponent, 
     private gameClosed: GamesOverviewClosedComponent){}
 
   ngOnInit ()
   {
     this.gameOverview.getOpenGames();
-    setTimeout(() => {
-        this.gamePlaying.getPlayingGames();
-        setTimeout(() => {
-          this.gameClosed.getClosedGames();
-        }, 2000);
-    }, 2000);
-
+    this.gamePlaying.getPlayingGames();
+    this.gameClosed.getClosedGames();
   }
 
   protected isLoggedIn(): boolean

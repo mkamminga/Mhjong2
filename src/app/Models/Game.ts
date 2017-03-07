@@ -33,7 +33,8 @@ export class Game extends BasicGame {
 
     public canJoin (player: Player) : boolean
     {
-        return this.avaiablePlaces() > 0 
+        return this.state == "open" 
+                && this.avaiablePlaces() > 0 
                 && this.createdBy.id != player.id 
                 && !this.isPlayerJoined(player);
     }

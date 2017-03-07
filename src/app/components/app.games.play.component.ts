@@ -47,7 +47,6 @@ export class GamesPlayComponent implements OnInit {
       @Inject(APP_CONFIG) private config: Config,
       @Inject(APP_STORAGE) private storage: StorageDriverInterface,
       private gameService: GameService, 
-      private gameTemplateService: GameTemplateService, 
       private gameTileService: TileService, 
       
       private router : Router,

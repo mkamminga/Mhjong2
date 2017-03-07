@@ -7,7 +7,7 @@ export class TilePlayerMatch {
 }
 
 export class TileSuite {
-    public id:string;
+    public id?:string;
     constructor (
         public _id: string,
         public suit: string,
@@ -24,7 +24,7 @@ export class TileSuite {
 }
 
 export class Tile {
-    public id:string;
+    public id:string = "";
     constructor(
         public xPos: number,
         public yPos: number,
@@ -36,7 +36,7 @@ export class Tile {
         this.id = _id;
     }
 
-    isMatch (tile: TileSuite): boolean
+    public isMatch (tile: TileSuite): boolean
     {
         if (this.tile)
         {

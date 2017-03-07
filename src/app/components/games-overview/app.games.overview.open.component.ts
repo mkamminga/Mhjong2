@@ -33,13 +33,14 @@ export class GamesOverviewOpenComponent {
 
   joinGame (game: Game): void 
   {
-
-     this.gameService.joinGame(game)
-                     .subscribe(
-                       updatedGame => this.updateGame(updatedGame, game),
-                       error =>  console.log(error), 
-                       () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game")
-                    );
+    if (game.canJoin(this.currentPlayer)){
+      this.gameService.joinGame(game)
+                      .subscribe(
+                        updatedGame => this.updateGame(updatedGame, game),
+                        error =>  console.log(error), 
+                        () => console.log("GamesComponent > joinGame > subscribe complete callback: joined game")
+                      );
+    }
 
   }
 
@@ -68,6 +69,7 @@ export class GamesOverviewOpenComponent {
 
   playGame (gameToPlay: Game)
   {
+    gameToPlay.state = "playing";
     this.router.navigate(['/games/'+ gameToPlay.id + '/play'])
   }
 }

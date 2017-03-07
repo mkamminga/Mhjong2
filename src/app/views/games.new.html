@@ -1,12 +1,6 @@
 <h2>New Game</h2>
-<div class="callout warning" [hidden]="errorMessage == ''" id="errorMessage">{{ errorMessage }}</div>
-
-
 <form [formGroup]="newGameForm" (submit)="return">
-<div class="callout warning" *ngIf="errorMessage" id="errorMessage">
-  {{ errorMessage }}
-</div>
-
+  <div class="callout warning" [hidden]="errorMessage == ''" id="errorMessage">{{ errorMessage }}</div>
   <div class="row">
     <div class="small-12 columns">
         <label for="minPlayers">Minimal Players</label>
