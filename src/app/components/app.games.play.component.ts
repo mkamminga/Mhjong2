@@ -12,13 +12,13 @@ import { GameTemplateService }            from '../services/GameTemplateService'
 import { TileService }                    from '../services/TileService';
 
 //models
-import { Game }                                         from '../Models/Game';
-import { Player }                                       from '../Models/Player';
-import { Tile }                                         from '../Models/Tile';
-import { GameTemplate }                                 from '../Models/GameTemplate';
-import { TileLayoutManager, TilePosition }              from '../Models/TileLayout';
+import { Game }                                         from '../models/Game';
+import { Player }                                       from '../models/Player';
+import { Tile }                                         from '../models/Tile';
+import { GameTemplate }                                 from '../models/GameTemplate';
+import { TileLayoutManager, TilePosition }              from '../models/TileLayout';
 import { Config, APP_CONFIG }  from '../Config';
-import { TileModelFactory }  from '../Configurations/TileLayoutFactories';
+import { TileModelFactory }  from '../configurations/TileLayoutFactories';
 
 
 @Component({
@@ -31,15 +31,15 @@ export class GamesPlayComponent implements OnInit {
     private inGameTiles: Tile[];
     private matching:boolean = false;
 
-    private selectedTile: Tile = null;
-    private selectedTIleToMatch: Tile = null;
+    selectedTile: Tile = null;
+    selectedTIleToMatch: Tile = null;
 
     private errorMessage:string = "";
     private spectator: boolean = true;
 
     private socket:SocketIOClient.Socket = null;
-    private layoutManagerType:string = "";
-    private tileLayoutManager : TileLayoutManager;
+    layoutManagerType:string = "";
+    tileLayoutManager : TileLayoutManager;
 
     private subscriptions:Subscription[] = [];
 

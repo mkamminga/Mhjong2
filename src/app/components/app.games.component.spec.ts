@@ -10,14 +10,14 @@ import { DebugElement, Inject, Injectable }         from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule }         from '@angular/forms';
 import { HttpModule, Http }                         from '@angular/http';
-import { RouterModule, Routes, Router }                     from '@angular/router';
+import { RouterModule, Routes, Router }             from '@angular/router';
 
 import { GameService }                              from '../services/GameService';
 import { UserService }                              from '../services/UserService';
 
-import { GameTemplate }                             from '../Models/GameTemplate';
-import { Game }                                     from '../Models/Game';
-import { Player }                                   from '../Models/Player';
+import { GameTemplate }                             from '../models/GameTemplate';
+import { Game }                                     from '../models/Game';
+import { Player }                                   from '../models/Player';
 
 
 import { GamesComponent }                           from './app.games.component';

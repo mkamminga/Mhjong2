@@ -10,16 +10,16 @@ import { DebugElement, Inject, Injectable }         from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule }         from '@angular/forms';
 import { HttpModule, Http }                         from '@angular/http';
-import { RouterModule, Routes, Router }             from '@angular/router';
+import { RouterModule, Routes }             from '@angular/router';
 
 import { GameService }                              from '../services/GameService';
 import { UserService }                              from '../services/UserService';
 import { TileService }                              from '../services/TileService';
 
-import { GameTemplate }                             from '../Models/GameTemplate';
-import { Game }                                     from '../Models/Game';
-import { Player }                                   from '../Models/Player';
-import { Tile }                                   from '../Models/Tile';
+import { GameTemplate }                             from '../models/GameTemplate';
+import { Game }                                     from '../models/Game';
+import { Player }                                   from '../models/Player';
+import { Tile }                                     from '../models/Tile';
 
 
 import { GamesPlayComponent }                       from './app.games.play.component';
@@ -31,6 +31,7 @@ import {Tabs }                                      from './tabs/app.tabs.compon
 import {Tab }                                       from './tabs/app.tab.component';
 
 import {importtedTiles}                             from './testing/tiles';
+import { ActivatedRoute, ActivatedRouteStub, click, newEvent, Router, RouterStub} from '../../testing';
 import {TestingModule}                              from './testing/TestingModule';
 
 class UserServiceSpy {
@@ -59,13 +60,22 @@ class GameServiceSpy {
 }
 
 class GameTileService {
-    getInGameTiles = jasmine.createSpy('getInGameTiles').and.callFake(
-    () => {
-      return new Observable<Tile[]>((subscriber: Subscriber<Tile[]>) => { 
-        subscriber.next(importtedTiles); 
-        subscriber.complete();  
-      })
-    }
+  getInGameTiles = jasmine.createSpy('getInGameTiles').and.callFake(
+      () => {
+        return new Observable<Tile[]>((subscriber: Subscriber<Tile[]>) => { 
+          subscriber.next(importtedTiles); 
+          subscriber.complete();  
+        })
+      }
+  );
+
+  postMatch = jasmine.createSpy('postMatch').and.callFake(
+      () => {
+        return new Observable<any>((subscriber: Subscriber<any>) => { 
+          subscriber.next({}); 
+          subscriber.complete();  
+        })
+      }
   );
 }
 
@@ -75,31 +85,39 @@ describe('Game play Componenents', () => {
   let fixture: ComponentFixture<GamesPlayComponent>;
   let de:      DebugElement;
   let el:      HTMLElement;
-   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GamesPlayComponent, GameContainingPlayerPipe, TileMatchPipe, Tabs, Tab ], 
-      imports: [ 
-        TestingModule,         
-        HttpModule, 
-        FormsModule, 
-        ReactiveFormsModule, 
-        RouterModule.forRoot([])]// declare the test component
-    })
-    .overrideComponent(GamesPlayComponent, {
-      set: {
-        providers: [
-          { provide: GameService, useClass: GameServiceSpy },
-          { provide: UserService, useClass: UserServiceSpy },
-          { provide: TileService, useClass: GameTileService }
-        ]
-      }
-    })
-    .compileComponents();  // compile template and css
+  let activatedRoute: ActivatedRouteStub;
 
+  beforeEach(async(() => {
+      activatedRoute = new ActivatedRouteStub();
+      activatedRoute.testParams = {
+        "id" : 9999
+      };
+      TestBed.configureTestingModule({
+        declarations: [ GamesPlayComponent, GameContainingPlayerPipe, TileMatchPipe, Tabs, Tab ], 
+        imports: [ 
+          TestingModule,         
+          HttpModule, 
+          FormsModule, 
+          ReactiveFormsModule, 
+          RouterModule.forRoot([])]// declare the test component
+      })
+      .overrideComponent(GamesPlayComponent, {
+        set: {
+          providers: [
+            { provide: ActivatedRoute, useValue: activatedRoute },
+            { provide: Router,         useClass: RouterStub},
+            { provide: GameService, useClass: GameServiceSpy },
+            { provide: UserService, useClass: UserServiceSpy },
+            { provide: TileService, useClass: GameTileService }
+          ]
+        }
+      })
+      .compileComponents();  // compile template and css
   }));
 
   // synchronous beforeEach
   beforeEach(() => {
+    
     fixture           = TestBed.createComponent(GamesPlayComponent);
     gameSpy           = fixture.debugElement.injector.get(GameService)
     comp              = fixture.componentInstance; // GamesNewComponent test instance
@@ -110,5 +128,27 @@ describe('Game play Componenents', () => {
   it('should have game title set', () => {
     let element = fixture.debugElement.query(By.css('h2'));
     expect(element.nativeElement.innerHTML).toBe("Game play", "Check for the right component failed: Should be the game play component");
+  });
+
+  it('should have two tabs', () => {
+    let elements = fixture.debugElement.queryAll(By.css('.tab-content'));
+    expect(elements.length).toBe(3);
+  });
+
+  it('should display two players', () => {
+    let elements = fixture.debugElement.queryAll(By.css('.tab-content ul.playerList li'));
+    expect(elements.length).toBe(2);
+  });
+
+  it('should be able to select tile', () => {
+    de = fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d7d"));
+    click(de.nativeElement);
+    expect(comp.selectedTile.id).toBe("58bc224903f6ee12001d6d7d");
+  });
+
+  it('should be able to select and match tiles', () => {
+    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d7d")).nativeElement);
+    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d7c")).nativeElement);
+    
   });
 });

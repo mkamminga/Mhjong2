@@ -5,7 +5,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import { MainHttpService }          from './MainHttpService';
-import { Tile, TileSuite, TileMatch, TilePlayerMatch }                     from '../Models/Tile';
+import { Tile, TileSuite, TileMatch, TilePlayerMatch }                     from '../models/Tile';
 
 @Injectable()
 export class TileService

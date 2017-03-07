@@ -24,7 +24,7 @@ import {PageNotFoundComponent } from './components/app.404.component';
 
 
 //pipes
-import { TileMatchPipe } from './Pipes/TileMatch.pipe';
+import { TileMatchPipe } from './pipes/TileMatch.pipe';
 import { GameContainingPlayerPipe } from './Pipes/GameContainingPlayer.pipe';
 
 
@@ -38,7 +38,7 @@ import { GameTemplateService }                    from './services/GameTemplateS
 import { TileService }                            from './services/TileService';
 
 //models
-import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './Models/TileLayout';
+import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './models/TileLayout';
 
 
 //misc, configurations

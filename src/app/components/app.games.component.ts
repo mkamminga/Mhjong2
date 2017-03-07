@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 
 import { UserService }            from '../services/UserService';
 import { GameService }            from '../services/GameService';
-import { Game }                   from '../Models/Game';
-import { Player }                   from '../Models/Player';
+import { Game }                   from '../models/Game';
+import { Player }                   from '../models/Player';
 
 import { GamesOverviewOpenComponent } from './games-overview/app.games.overview.open.component';
 import { GamesOverviewPlayingComponent } from './games-overview/app.games.overview.playing.component';

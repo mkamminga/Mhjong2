@@ -5,8 +5,8 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import { MainHttpService }          from './MainHttpService';
-import { GameTemplate }             from '../Models/GameTemplate';
-import { Tile }                     from '../Models/Tile';
+import { GameTemplate }             from '../models/GameTemplate';
+import { Tile }                     from '../models/Tile';
 
 @Injectable()
 export class GameTemplateService

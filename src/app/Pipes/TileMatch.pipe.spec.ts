@@ -1,5 +1,5 @@
 import {TileMatchPipe} from './TileMatch.pipe';
-import {Tile, TilePlayerMatch} from '../Models/Tile';
+import {Tile, TilePlayerMatch} from '../models/Tile';
 
 describe('Tile match pipe', () => {
   let tiles:Tile[] = [

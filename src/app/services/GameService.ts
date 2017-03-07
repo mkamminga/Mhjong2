@@ -5,11 +5,11 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import { MainHttpService }          from './MainHttpService';
-import { BasicGame }                from '../Models/BasicGame';
-import { Game }                     from '../Models/Game';
-import { GameTemplate }             from '../Models/GameTemplate';
-import { Player }                   from '../Models/Player';
-import { Tile }                     from '../Models/Tile';
+import { BasicGame }                from '../models/BasicGame';
+import { Game }                     from '../models/Game';
+import { GameTemplate }             from '../models/GameTemplate';
+import { Player }                   from '../models/Player';
+import { Tile }                     from '../models/Tile';
 
 @Injectable()
 export class GameService

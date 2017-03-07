@@ -15,8 +15,8 @@ import { RouterModule, Routes }                     from '@angular/router';
 import { GameTemplateService }                      from '../services/GameTemplateService';
 import { GameService }                              from '../services/GameService';
 
-import { GameTemplate }                             from '../Models/GameTemplate';
-import { Game }                                     from '../Models/Game';
+import { GameTemplate }                             from '../models/GameTemplate';
+import { Game }                                     from '../models/Game';
 
 
 import { GamesNewComponent }                        from './app.games.new.component';

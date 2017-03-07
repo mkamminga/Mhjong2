@@ -7,8 +7,8 @@ import { GamesComponent }            from '../app.games.component';
 
 import { UserService }            from '../../services/UserService';
 import { GameService }            from '../../services/GameService';
-import { Game }                   from '../../Models/Game';
-import { Player }                   from '../../Models/Player';
+import { Game }                   from '../../models/Game';
+import { Player }                   from '../../models/Player';
 
 @Injectable()
 export class GamesOverviewPlayingComponent  {

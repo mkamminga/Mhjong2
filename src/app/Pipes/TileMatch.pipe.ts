@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform } from '@angular/core';
-import {Tile, TilePlayerMatch} from '../Models/Tile'
+import {Tile, TilePlayerMatch} from '../models/Tile'
 // Tell Angular2 we're creating a Pipe with TypeScript decorators
 @Pipe({
   name: 'tileMatch',

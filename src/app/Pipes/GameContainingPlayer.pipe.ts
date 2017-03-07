@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform } from '@angular/core';
-import {Game } from '../Models/Game';
-import {Player } from '../Models/Player';
+import {Game } from '../models/Game';
+import {Player } from '../models/Player';
 // Tell Angular2 we're creating a Pipe with TypeScript decorators
 @Pipe({
   name: 'gameContainsPlayer',

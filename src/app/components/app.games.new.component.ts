@@ -4,9 +4,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router }                             from '@angular/router';
 
 import { GameService }                        from '../services/GameService';
-import { GameTemplateService }                        from '../services/GameTemplateService';
-import { BasicGame }                          from '../Models/BasicGame';
-import { GameTemplate }                       from '../Models/GameTemplate';
+import { GameTemplateService }                from '../services/GameTemplateService';
+import { BasicGame }                          from '../models/BasicGame';
+import { GameTemplate }                       from '../models/GameTemplate';
 
 
 @Component({

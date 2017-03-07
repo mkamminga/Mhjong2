@@ -27,7 +27,7 @@ class FakeMainHttpServiceFactory {
 
 const configurationObject:Config = {
   baseUrl: "",
-  tileManager:  ""
+  tileManager:  "vertical"
 };
 
 @NgModule({

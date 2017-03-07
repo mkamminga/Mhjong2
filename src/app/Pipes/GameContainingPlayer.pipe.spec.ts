@@ -1,6 +1,6 @@
 import {GameContainingPlayerPipe} from './GameContainingPlayer.pipe';
-import {Game } from '../Models/Game';
-import {Player } from '../Models/Player';
+import {Game } from '../models/Game';
+import {Player } from '../models/Player';
 
 describe('Game containing player pipe', () => {
   let games = [

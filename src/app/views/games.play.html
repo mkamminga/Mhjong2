@@ -1,5 +1,3 @@
-
-
 <div *ngIf="game == null">Loading details...</div>
 <h2>Game play</h2>
 
@@ -20,12 +18,12 @@
         <div id="board" class="{{ layoutManagerType }}">
             <div class="callout alert" [hidden]="errorMessage == ''" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">{{ errorMessage }}</div>
             <div class="callout primary" [hidden]="!matching" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">Matching</div>
-            <div *ngFor="let tile of (inGameTiles | tileMatch)" class="tile" [ngClass]="{'selected': tile == selectedTile || tile == selectedTIleToMatch }" (click)="matchTile(tile)" [ngStyle]="calcTilePosition(tile)"></div>
+            <div *ngFor="let tile of (inGameTiles | tileMatch)" class="tile" [ngClass]="{'selected': tile == selectedTile || tile == selectedTIleToMatch }" (click)="matchTile(tile)" id="tile-{{ tile.id }}" [ngStyle]="calcTilePosition(tile)"></div>
         </div>
     </tab>
 
     <tab tabTitle="Players">
-        <ul *ngIf="game != null">
+        <ul *ngIf="game != null" class="playerList">
             <li *ngFor="let player of game.players"><strong>{{ player.name }}</strong></li>
         </ul>
     </tab>

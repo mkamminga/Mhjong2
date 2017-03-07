@@ -1,8 +1,8 @@
-import {TileLayoutManager} from '../Models/TileLayout';
-import {VerticalLayoutManager} from '../Models/TileThemeLayouts/VerticalTileLayout';
-import {HybridLayoutManager} from '../Models/TileThemeLayouts/HybridTileLayout';
-import { chosenTileLayout} from '../Configurations/SpecialTileStyleVertical.config';
-import { hybridTileLayout} from '../Configurations/SpecialTileStyleHybrid.config';
+import {TileLayoutManager}        from '../models/TileLayout';
+import {VerticalLayoutManager}    from '../models/TileThemeLayouts/VerticalTileLayout';
+import {HybridLayoutManager}      from '../models/TileThemeLayouts/HybridTileLayout';
+import { chosenTileLayout}        from '../configurations/SpecialTileStyleVertical.config';
+import { hybridTileLayout}        from '../configurations/SpecialTileStyleHybrid.config';
 
 export const factories:[{ key: string, factory:() => TileLayoutManager}] = [{
     key : "vertical",

@@ -1,4 +1,4 @@
-import {TileLayout} from '../Models/TileLayout'
+import {TileLayout} from '../models/TileLayout'
 
 export const hybridTileLayout: TileLayout = {
     "Bamboo" : {
