@@ -15,19 +15,19 @@ import { GameTemplate }                       from '../Models/GameTemplate';
 })
 
 export class GamesNewComponent implements OnInit {
-  mode = 'Observable'; 
-  errorMessage: string; // post, get or put callback errors
-  gameTemplates: GameTemplate[];
-  model = new BasicGame(null, null, null);
-  result = {};
-  newGameForm: FormGroup;
+  private mode = 'Observable'; 
+  private errorMessage: string; // post, get or put callback errors
+  private gameTemplates: GameTemplate[];
+  private model = new BasicGame(null, null, null);
+  private result = {};
+  private newGameForm: FormGroup;
 
-  formErrors = {
+  private formErrors = {
     'minPlayers' : '',
     'maxPlayers' : '',
     'templateName': ''
   };
-  validationMessages = {
+  private validationMessages = {
     'minPlayers': {
       'required'  :      'Minplayer is required.',
       'undefined' :      'Value is not valid.'
@@ -72,11 +72,12 @@ export class GamesNewComponent implements OnInit {
                   .subscribe(
                     result => this.router.navigate(['/']),
                     error =>  this.errorMessage = "Unkown error occurred!", 
-                    () => console.log("GamesNewComponent > postNewGame > subscribe complete callback"));
+                    () => {console.log("GamesNewComponent > postNewGame > subscribe complete callback"); this.errorMessage = ""; });
       ;
     }
     else
     {
+      this.errorMessage = "Fill in the form correctly! ";
       console.log("GamesNewComponent > postNewGame: invalid form");
     }
   }

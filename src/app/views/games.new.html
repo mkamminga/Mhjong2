@@ -1,12 +1,11 @@
 <h2>New Game</h2>
 
-<div class="callout warning" *ngIf="errorMessage">
-</div>
+
 
 <form [formGroup]="newGameForm" (submit)="return">
-  <div class="alert callout" style="display: none;">
-    <p><i class="fi-alert"></i> There are some errors in your form.</p>
-  </div>
+<div class="callout warning" *ngIf="errorMessage" id="errorMessage">
+  {{ errorMessage }}
+</div>
 
   <div class="row">
     <div class="small-12 columns">
