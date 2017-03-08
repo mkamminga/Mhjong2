@@ -4,6 +4,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import * as io from "socket.io-client";
+
 import { async, fakeAsync,  tick, ComponentFixture, TestBed }         from '@angular/core/testing';
 import { By }                                       from '@angular/platform-browser';
 import { DebugElement, Inject, Injectable }         from '@angular/core';
@@ -19,7 +20,7 @@ import { TileService }                              from '../services/TileServic
 import { GameTemplate }                             from '../models/GameTemplate';
 import { Game }                                     from '../models/Game';
 import { Player }                                   from '../models/Player';
-import { Tile }                                     from '../models/Tile';
+import { Tile, TilePlayerMatch }                    from '../models/Tile';
 
 
 import { GamesPlayComponent }                       from './app.games.play.component';
@@ -59,7 +60,7 @@ class GameServiceSpy {
   );
 }
 
-class GameTileService {
+class GameTileServiceSpy {
   getInGameTiles = jasmine.createSpy('getInGameTiles').and.callFake(
       () => {
         return new Observable<Tile[]>((subscriber: Subscriber<Tile[]>) => { 
@@ -81,6 +82,7 @@ class GameTileService {
 
 describe('Game play Componenents', () => {
   let gameSpy: GameServiceSpy;   
+  let gameTileSpy: GameTileServiceSpy;
   let comp:    GamesPlayComponent;
   let fixture: ComponentFixture<GamesPlayComponent>;
   let de:      DebugElement;
@@ -108,7 +110,7 @@ describe('Game play Componenents', () => {
             { provide: Router,         useClass: RouterStub},
             { provide: GameService, useClass: GameServiceSpy },
             { provide: UserService, useClass: UserServiceSpy },
-            { provide: TileService, useClass: GameTileService }
+            { provide: TileService, useClass: GameTileServiceSpy }
           ]
         }
       })
@@ -119,9 +121,10 @@ describe('Game play Componenents', () => {
   beforeEach(() => {
     
     fixture           = TestBed.createComponent(GamesPlayComponent);
-    gameSpy           = fixture.debugElement.injector.get(GameService)
+    gameSpy           = fixture.debugElement.injector.get(GameService);
+    gameTileSpy       = fixture.debugElement.injector.get(TileService);
     comp              = fixture.componentInstance; // GamesNewComponent test instance
-    
+    comp.socketConnected();
     fixture.detectChanges();
   });
 
@@ -147,8 +150,36 @@ describe('Game play Componenents', () => {
   });
 
   it('should be able to select and match tiles', () => {
+    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d63")).nativeElement);
+    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d5c")).nativeElement);
+    expect(comp.selectedTile.id).toBe("58bc224903f6ee12001d6d63", "First match");
+    expect(comp.selectedTIleToMatch.id).toBe("58bc224903f6ee12001d6d5c", "Second match");
+    expect(gameTileSpy.postMatch.calls.count()).toBe(1);
+  });
+
+  it('should deselect selected tile', () => {
+    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d63")).nativeElement);
+    expect(comp.selectedTile.id).toBe("58bc224903f6ee12001d6d63", "First match");
+    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d63")).nativeElement);
+    expect(comp.selectedTile).toBeNull();
+  });
+
+  it('shouldn\t be able to select and match these selected tiles', () => {
+    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d63")).nativeElement);
+    expect(comp.selectedTile.id).toBe("58bc224903f6ee12001d6d63", "First match");
+
     click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d7d")).nativeElement);
-    click(fixture.debugElement.query(By.css("#tile-58bc224903f6ee12001d6d7c")).nativeElement);
-    
+    expect(comp.selectedTIleToMatch).toBeNull("Second match");
+    expect(gameTileSpy.postMatch.calls.count()).toBe(0);
+  });
+
+  it('should emulate socketmatch tiles and put two into the played tiles tabs', () => {
+    let foundBy = new TilePlayerMatch("JohnDoe", "1", "2/2/2012 12:00:00");
+    importtedTiles[0].match = foundBy;
+    importtedTiles[1].match = foundBy;
+
+    comp.socketMatchFound([importtedTiles[0], importtedTiles[1]]);
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css("#played-tiles-by-JohnDoe .tile")).length).toBe(2, "Matched tiles");
   });
 });

@@ -3,7 +3,7 @@
 
 <div class="clearfix">
     <div class="float-left">
-        Theme: <button class="button small primary" type="button" (click)="changeTheme('vertical')">Vertical</button> | <button class="button small primary" type="button" (click)="changeTheme('hybrid')">Hybrid</button>
+        Theme: <button *ngFor="let button of supportedLayouts" class="button small {{ layoutManagerType == button.name ? 'primary' : 'secondary'}}" type="button" (click)="changeTheme(button.name)">{{ button.title }}</button> 
     </div>
 
     <div class="float-right">
@@ -17,7 +17,7 @@
         <div class="callout warning" [hidden]="game == null || game.state != 'open'">Waiting for other players</div>
         <div id="board" class="{{ layoutManagerType }}">
             <div class="callout alert" [hidden]="errorMessage == ''" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">{{ errorMessage }}</div>
-            <div class="callout primary" [hidden]="!matching" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">Matching</div>
+            <div class="callout primary" [hidden]="infoMessage == ''" style="position: abslolute; z-index: 9000; width: 100%; top: 0;">{{ infoMessage }}</div>
             <div *ngFor="let tile of (inGameTiles | tileMatch)" class="tile" [ngClass]="{'selected': tile == selectedTile || tile == selectedTIleToMatch }" (click)="matchTile(tile)" id="tile-{{ tile.id }}" [ngStyle]="calcTilePosition(tile)"></div>
         </div>
     </tab>
@@ -31,7 +31,7 @@
     <tab tabTitle="Played tiles">
         <div id="players-board" class="{{ layoutManagerType }}">
             <div *ngIf="game != null">
-                <div *ngFor="let player of game.players">
+                <div *ngFor="let player of game.players" id="played-tiles-by-{{ player.id }}">
                     <div><strong>{{ player.name }}</strong></div>
                     <div class="tile" *ngFor="let tile of (inGameTiles | tileMatch: true: player.id)" [ngStyle]="calcTileOffset(tile)"></div>
                 </div>

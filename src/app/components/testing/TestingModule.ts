@@ -12,7 +12,7 @@ import { MainHttpService}                           from '../../services/MainHtt
 import { GameService }                              from '../../services/GameService';
 import { GameTemplateService }                      from '../../services/GameTemplateService';
 import { TileService }                              from '../../services/TileService';
-
+import { SocketIoService }                              from '../../services/SocketIoService';
 
 
 import { Config, APP_CONFIG }                       from '../../Config';
@@ -59,7 +59,8 @@ const configurationObject:Config = {
         {
             provide: APP_BASE_HREF, 
             useValue : '/' 
-        }
+        },
+        SocketIoService
     ],
     imports: [ 
         HttpModule, 

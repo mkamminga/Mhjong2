@@ -1,15 +1,18 @@
-import {OnInit, OnDestroy, Component, Injectable, Inject, ReflectiveInjector} from '@angular/core';
-import { Observable }                       from 'rxjs/Observable';
-import {Router, ActivatedRoute, Params}     from '@angular/router';
-import * as io from "socket.io-client";
+import {
+  OnInit, OnDestroy, Component, Injectable, Inject
+}                                                       from '@angular/core';
+import { Observable }                                   from 'rxjs/Observable';
+import {Router, ActivatedRoute, Params}                 from '@angular/router';
+import * as io                                          from "socket.io-client";
 
-import { UserService }                    from '../services/UserService';
-import { Subscription }                   from 'rxjs/Subscription';
-
-import {StorageDriverInterface, APP_STORAGE } from '../services/Storage/StorageDriverInterface';
-import { GameService }                    from '../services/GameService';
-import { GameTemplateService }            from '../services/GameTemplateService';
-import { TileService }                    from '../services/TileService';
+import { Subscription }                                 from 'rxjs/Subscription';
+//Services
+import { UserService }                                  from '../services/UserService';
+import {StorageDriverInterface, APP_STORAGE }           from '../services/Storage/StorageDriverInterface';
+import { GameService }                                  from '../services/GameService';
+import { GameTemplateService }                          from '../services/GameTemplateService';
+import { TileService }                                  from '../services/TileService';
+import { SocketIoService }                              from '../services/SocketIoService';
 
 //models
 import { Game }                                         from '../models/Game';
@@ -17,6 +20,7 @@ import { Player }                                       from '../models/Player';
 import { Tile }                                         from '../models/Tile';
 import { GameTemplate }                                 from '../models/GameTemplate';
 import { TileLayoutManager, TilePosition }              from '../models/TileLayout';
+//Config
 import { Config, APP_CONFIG }  from '../Config';
 import { TileModelFactory }  from '../configurations/TileLayoutFactories';
 
@@ -29,7 +33,8 @@ import { TileModelFactory }  from '../configurations/TileLayoutFactories';
 export class GamesPlayComponent implements OnInit {
     private game: Game = null;
     private inGameTiles: Tile[];
-    private matching:boolean = false;
+    private connected:boolean = false;
+    infoMessage:string = "";
 
     selectedTile: Tile = null;
     selectedTIleToMatch: Tile = null;
@@ -42,6 +47,15 @@ export class GamesPlayComponent implements OnInit {
     tileLayoutManager : TileLayoutManager;
 
     private subscriptions:Subscription[] = [];
+    private supportedLayouts = [
+      {
+        "title" : "Vertical", 
+        "name": "vertical"
+      },
+      {
+        "title" : "Hybrid",
+        "name" : "hybrid"
+      }];
 
     constructor(
       @Inject(APP_CONFIG) private config: Config,
@@ -51,7 +65,8 @@ export class GamesPlayComponent implements OnInit {
       
       private router : Router,
       private activatedRoute: ActivatedRoute,
-      private userService: UserService) 
+      private userService: UserService,
+      private socketIoService: SocketIoService) 
     {
       this.layoutManagerType = config.tileManager;
       //console.log(config.tileManager);
@@ -78,6 +93,7 @@ export class GamesPlayComponent implements OnInit {
 
     private start (gameId:string)
     {
+        this.setInfoMessage("Connecting with server!");
         this.getGamePlayDetails(gameId);
         this.getGamesTiles(gameId);
         this.setUpSocket(this.config.baseUrl + ':80?gameId='+ gameId);
@@ -109,27 +125,55 @@ export class GamesPlayComponent implements OnInit {
     }
 
     private setUpSocket (url: string) {
-      this.socket = io(url).connect();
+      this.socket = this.socketIoService.create(url).connect();
       this.socket.on('connect', () => {
         console.log("Socket openend");
+        this.socketConnected();
       });
 
       this.socket.on('disconnect', () => {
-        this.setErrorMessage("Disconnected with server! Reestablling connection!");
-        this.clear();
-        this.start(this.game.id);
+        console.log("Disconnected");
+        this.socketDisconnected();
       });
 
       this.socket.on("start", () => {
-        this.game.state = "playing";
-        this.setErrorMessage("Game has started!");
-        this.spectator = this.isPlayerSpectator(this.game, this.userService.getUserName());
-        this.getGamesTiles(this.game.id);
+        this.socketStartGame();
       });
 
       this.socket.on('match', (matches: Tile[]) => {
         console.log("Match found!");
-        
+        this.socketMatchFound(matches);
+      });
+
+      this.socket.on('playerJoined', (player:Player) => {
+        this.socketPlayerJoined(player);
+      });
+
+      this.socket.on('end', () => {
+        this.socketGameEnded();
+      });
+    }
+
+    public socketConnected(): void {
+      this.connected = true;
+      this.setInfoMessage("Connected with server!", 1000);
+    }
+
+    public socketDisconnected (): void {    
+        this.setErrorMessage("Disconnected with server! Reestablling connection!", 1000);
+        this.clear();
+        this.start(this.game.id);
+    }
+
+    public socketStartGame (): void {
+      this.game.state = "playing";
+      this.setInfoMessage("Game has started!");
+      this.spectator = this.isPlayerSpectator(this.game, this.userService.getUserName());
+      this.getGamesTiles(this.game.id);
+    }
+
+    public socketMatchFound (matches: Tile[])
+    {
         for (let item of matches){
 
           if (this.selectedTile != null && item._id == this.selectedTile._id)
@@ -143,26 +187,26 @@ export class GamesPlayComponent implements OnInit {
 
           this.setTileMatchedBy(item);
         }
-      });
+    }
 
-      this.socket.on('playerJoined', (player:Player) => {
+    public socketPlayerJoined (player: Player)
+    {
+      if (player.name == undefined || player.name == "")
+      {
+        player.name = "John Doe";
+      }
 
-        if (player.name == undefined || player.name == "")
-        {
-          player.name = "John Doe";
-        }
+      let newPlayer = new Player(player._id, player._id, player.name);
 
-        let newPlayer = new Player(player._id, player._id, player.name);
+      this.setInfoMessage("'"+ newPlayer.name +"' has joined the game!");
+      this.game.players.push(newPlayer);
+    }
 
-        this.setErrorMessage("'"+ newPlayer.name +"' has joined the game!");
-        this.game.players.push(newPlayer);
-      });
-
-      this.socket.on('end', () => {
+    public socketGameEnded ()
+    {
         console.log("Game has endend");
         this.setErrorMessage("Game has ended! No more matches posible!");
         this.game.state = "finished";
-      });
     }
 
     public calcTilePosition (tile: Tile): any 
@@ -188,8 +232,9 @@ export class GamesPlayComponent implements OnInit {
 
     public matchTile (tile: Tile): void
     {
-      if (this.game.state != "playing" || (this.selectedTile && this.selectedTIleToMatch) || this.spectator)
+      if (!this.connected || this.game.state != "playing" || (this.selectedTile && this.selectedTIleToMatch) || this.spectator)
       {
+        console.log("Not able to select");
         //waiting for answer, be paitient, or just a spectator
         return;
       }
@@ -207,14 +252,21 @@ export class GamesPlayComponent implements OnInit {
 
         if (!tile.isMatch(this.selectedTile.tile))
         {
+          console.log("Tiles are no match");
           this.setErrorMessage("Selected tiles are not a match!");
           this.selectedTile = null; // reset matches
           this.selectedTIleToMatch = null;
         }
         else
         {
-          this.matching = true;
-          let subscribtion = this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
+          this.postMatch();
+        }
+      }
+    }
+
+    private postMatch () {
+        this.setInfoMessage("matching", 10000);
+        let subscribtion = this.gameTileService.postMatch(this.game.id, this.selectedTIleToMatch, this.selectedTile) // fetch layed tiles
               .subscribe(
                 response => {
                   console.log("Tile matched!");
@@ -222,18 +274,16 @@ export class GamesPlayComponent implements OnInit {
                 error =>  {
                   console.log(error);
                   this.setErrorMessage(error.message.replace("{{tile}}", this.selectedTIleToMatch.tile.suit + " "+ this.selectedTIleToMatch.tile.name));
-                  this.matching = false;
+                  
                   this.selectedTile = null; // reset matches
                   this.selectedTIleToMatch = null;
                 }, 
                 () => {
                   console.log("GamesPlayComponent > getGamePlayDetails > subscribe complete callback: tiles fetched");
-                  this.matching = false;
-                  subscribtion.unsubscribe();
+                  this.infoMessage = "";
+                  //subscribtion.unsubscribe();
                 }
             );
-        }
-      }
     }
 
     private isPlayerSpectator (game: Game, playerId: string) 
@@ -262,19 +312,27 @@ export class GamesPlayComponent implements OnInit {
       this.tileLayoutManager = TileModelFactory.create(theme);
     }
 
-    private setErrorMessage (message: string)
+    private setErrorMessage (message: string, time:number = 3000)
     {
       this.errorMessage = message;
 
       setTimeout(() => {
         this.errorMessage = "";
-      }, 3000);
+      }, time);
+    }
+
+    private setInfoMessage (message: string, time:number = 3000)
+    {
+      this.infoMessage = message;
+
+      setTimeout(() => {
+        this.infoMessage = "";
+      }, time);
     }
 
     ngOnDestroy() 
     {
       this.clear();
-     
     }
 
     private clear ()

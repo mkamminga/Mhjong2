@@ -1,3 +1,5 @@
+@import '_mixins';
+
 .vertical {
     .tile {         
         width: 35px;
@@ -32,7 +34,7 @@
 
     .selected {
         border: 2px solid green;
-        transform: rotate(4deg);
+        @include doTransform(3deg);
     }
 }
 

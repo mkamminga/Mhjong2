@@ -41,15 +41,16 @@ class UserServiceSpy {
 class GameServiceSpy {
   navSpy:       jasmine.Spy;
   private userServiceSpy = new UserServiceSpy();
+  private gameTemplate = new GameTemplate("Ram", []);
   private openGames = [
-    new Game("1", new Player("1", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", null, [new Player("1", "1", "Me")], 2,1, "open"),
-    new Game("1", new Player("JohnDoe", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", null, [new Player("JohnDoe", "1", "Me")], 1,1, "open")
+    new Game("1", new Player("1", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", this.gameTemplate, [new Player("1", "1", "Me")], 2,1, "open"),
+    new Game("1", new Player("JohnDoe", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", this.gameTemplate, [new Player("JohnDoe", "1", "Me")], 1,1, "open")
   ];
 
   private playingGames = [
-    new Game("1", new Player("1", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", null, [new Player("1", "1", "Me")], 2,1, "playing"),
-    new Game("1", new Player("1", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", null, [new Player("1", "1", "Me")], 2,1, "playing"),
-    new Game("1", new Player("JohnDoe", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", null, [new Player("JohnDoe", "1", "Me")], 1,1, "open")
+    new Game("1", new Player("1", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", this.gameTemplate, [new Player("1", "1", "Me")], 2,1, "playing"),
+    new Game("1", new Player("1", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", this.gameTemplate, [new Player("1", "1", "Me")], 2,1, "playing"),
+    new Game("1", new Player("JohnDoe", "1", "Me"), "2014/2/2 14:00:00", "2014/2/2 14:00:00", "2014/2/2 14:00:00", this.gameTemplate, [new Player("JohnDoe", "1", "Me")], 1,1, "open")
   ];
 
   constructor () {

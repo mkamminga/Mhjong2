@@ -15,9 +15,10 @@ Please login to view any games!
                 <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
 
                 <hr />
-                <span>Available places: <strong>{{ game.avaiablePlaces() }}</strong></span>
-
-                <h6>Joined players</h6>
+                <div>Template: <strong>{{ game.gameTemplate.id }}</strong></div>
+                <div>Available places: <strong>{{ game.avaiablePlaces() }}</strong></div>
+                <br />
+                <h5>Joined players</h5>
                 <ul *ngIf="game.players.length > 0 ">
                     <li *ngFor="let player of game.players"> {{ player.name }}</li>
                 </ul>
@@ -35,8 +36,9 @@ Please login to view any games!
                 <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
                 <div>Started at: <strong>{{ game.startedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
                 <hr />
-
-                <h6>Joined players</h6>
+                <div>Template: <strong>{{ game.gameTemplate.id }}</strong></div>
+                <br />
+                <h5>Joined players</h5>
                 <ul *ngIf="game.players.length > 0 ">
                     <li *ngFor="let player of game.players"> {{ player.name }}</li>
                 </ul>
@@ -50,8 +52,9 @@ Please login to view any games!
                 <h5 class="clearfix">{{ game.createdBy.name }} <small class="float-right">{{ game.createdOn | date:'dd/MM/yyyy HH:mm:ss' }}</small></h5> 
                 <div>Started at: <strong>{{ game.startedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
                 <hr />
-
-                <h6>Joined players</h6>
+                <div>Template: <strong>{{ game.gameTemplate.id }}</strong></div>
+                <br />
+                <h5>Joined players</h5>
                 <ul *ngIf="game.players.length > 0 ">
                     <li *ngFor="let player of game.players"> {{ player.name }}</li>
                 </ul>
@@ -67,7 +70,9 @@ Please login to view any games!
                 <div>Ended at: <strong>{{ game.endedOn | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
                 <hr />
 
-                <h6>Players</h6>
+                <div>Template: <strong>{{ game.gameTemplate.id }}</strong></div>
+                <br />
+                <h5>Joined players</h5>
                 <ul *ngIf="game.players.length > 0 ">
                     <li *ngFor="let player of game.players"> {{ player.name }}</li>
                 </ul>

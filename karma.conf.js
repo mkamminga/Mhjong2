@@ -53,6 +53,9 @@ module.exports = function(config) {
       //socket io
       { pattern: 'node_modules/socket.io-client/**/*.js', included: false, watched: false },
       { pattern: 'node_modules/socket.io-client/**/*.js.map', included: false, watched: false },
+      //mock socket io
+      { pattern: 'node_modules/mock-socket/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/mock-socket/**/*.js.map', included: false, watched: false },
       // Paths loaded via module imports:
       // Angular itself
       { pattern: 'node_modules/@angular/**/*.js', included: false, watched: false },

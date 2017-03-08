@@ -16,7 +16,7 @@ import { GameTemplate }                       from '../models/GameTemplate';
 
 export class GamesNewComponent implements OnInit {
   private mode = 'Observable'; 
-  private errorMessage: string; // post, get or put callback errors
+  private errorMessage: string = ''; // post, get or put callback errors
   private gameTemplates: GameTemplate[];
   private model = new BasicGame(null, null, null);
   private result = {};

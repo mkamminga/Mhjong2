@@ -36,6 +36,7 @@ import { UserService }                            from './services/UserService';
 import { GameService }                            from './services/GameService';
 import { GameTemplateService }                    from './services/GameTemplateService';
 import { TileService }                            from './services/TileService';
+import { SocketIoService }                        from './services/SocketIoService';
 
 //models
 import { TileLayoutManager, TITLE_TEMPLATE_CONFIG }    from './models/TileLayout';
@@ -119,7 +120,8 @@ class MainHttpServiceFactory {
       provide: MainHttpService, 
       useFactory:MainHttpServiceFactory.create, 
       deps: [Http, UserService, APP_CONFIG]
-    }
+    },
+    SocketIoService
     
   ], 
   bootstrap:    [ DashBoardComponent ]
